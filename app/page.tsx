@@ -353,16 +353,16 @@ export default function Home() {
         viewport={{ once: true }}
         transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
       >
-        {/* container: allow wrapping, center items, remove forced horizontal scroll */}
-        <div className="flex flex-wrap gap-3 mb-8 justify-center items-center">
+        <div className="flex gap-2 mb-8 justify-center overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 text-sm sm:text-base font-medium rounded-full transition-all duration-200 whitespace-nowrap shadow-sm ${activeTab === tab.id
-                ? 'bg-black text-white dark:bg-white dark:text-black shadow-md'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              className={`px-2 py-1 text-[0.7rem] sm:px-4 sm:py-2 sm:text-xs font-medium rounded-full transition-all duration-200 whitespace-nowrap ${activeTab === tab.id
+                ? '!bg-black !text-white dark:!bg-white dark:!text-black'
+                : '!bg-gray-100 !text-gray-600 hover:!bg-gray-200 dark:!bg-gray-800 dark:!text-gray-300 dark:hover:!bg-gray-700'
                 }`}
+              style={{ minWidth: "48px" }}
             >
               {tab.label}
             </button>
