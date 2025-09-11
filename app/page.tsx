@@ -16,6 +16,15 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("Project");
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // add: desktop detection to only mount SplashCursor on desktop
+  const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 640); // md breakpoint
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   useEffect(() => {
     const checkDarkMode = () => {
       setIsDarkMode(document.documentElement.classList.contains('dark'));
@@ -196,7 +205,8 @@ export default function Home() {
         </div>
       )}
 
-      <SplashCursor />
+      {/* SplashCursor: only render on desktop to avoid mobile cost */}
+      {isDesktop && <SplashCursor />}
 
       {/* Theme toggler */}
       <div className="fixed top-4 right-4 z-50">
@@ -234,7 +244,7 @@ export default function Home() {
                 }}
                 transition={{ repeat: Infinity, duration: 1 }}
               />
-              <span className='text-sm'>Active</span>
+              <span className='text-xs'>Active</span>
             </motion.div>
 
             {/* Profile Image with Animation */}
@@ -343,16 +353,16 @@ export default function Home() {
         viewport={{ once: true }}
         transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
       >
-        <div className="flex gap-2 mb-8 justify-center overflow-x-auto scrollbar-hide">
+        {/* container: allow wrapping, center items, remove forced horizontal scroll */}
+        <div className="flex flex-wrap gap-3 mb-8 justify-center items-center">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-2 py-1 text-[0.7rem] sm:px-4 sm:py-2 sm:text-xs font-medium rounded-full transition-all duration-200 whitespace-nowrap ${activeTab === tab.id
-                ? 'bg-black text-white dark:bg-white dark:text-black'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              className={`px-4 py-2 text-sm sm:text-base font-medium rounded-full transition-all duration-200 whitespace-nowrap shadow-sm ${activeTab === tab.id
+                ? 'bg-black text-white dark:bg-white dark:text-black shadow-md'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
                 }`}
-              style={{ minWidth: "48px" }}
             >
               {tab.label}
             </button>
