@@ -1,0 +1,26 @@
+/* scroll-fade.module.css */
+.wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.wrapper::before,
+.wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, #181818, transparent);
+}
+
+.wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, #181818, transparent);
+}
