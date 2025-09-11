@@ -232,7 +232,7 @@ export default function Home() {
                 }}
                 transition={{ repeat: Infinity, duration: 1 }}
               />
-              <span className='text-xs'>Active</span>
+              <span className='text-sm'>Active</span>
             </motion.div>
 
             {/* Profile Image with Animation */}

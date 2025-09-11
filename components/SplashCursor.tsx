@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, prefer-const */
+
 'use client';
 import React, { useEffect, useRef } from 'react';
 

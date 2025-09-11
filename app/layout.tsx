@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import { Quicksand } from "next/font/google";
 import "../styles/globals.css";
 
+
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-quicksand",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,16 +23,14 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className="antialiased"
+      className={`${quicksand.variable} antialiased`}
     >
       <head>
         <meta name="view-transition" content="same-origin" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
-          rel="stylesheet"
-        />
       </head>
-      <body className="transition-colors duration-300">{children}</body>
+      <body className={`transition-colors duration-300 ${quicksand.className}`}>
+        {children}
+      </body>
     </html>
   );
 }
