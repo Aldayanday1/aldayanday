@@ -5,10 +5,12 @@ import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggle
 import { motion } from "motion/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faYoutube, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';  // Tambahkan import ini
 import SplashCursor from '@/components/SplashCursor';
 import { TextAnimate } from "@/components/magicui/text-animate";
 import GradualBlur from '@/components/GradualBlur';
 import LightRays from '@/components/LightRays';
+
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Project");
@@ -282,15 +284,17 @@ export default function Home() {
             >
               I spend most of time thinking about Tea.
             </TextAnimate>
-            <TextAnimate
-              animation="blurIn"
-              by="character"
-              delay={0.5}
-              once={true}  // Tambahkan ini
-              className="text-xs text-[var(--text-secondary)]"
-            >
-              Yogyakarta, Indonesia
-            </TextAnimate>
+            <div className="text-xs text-[var(--text-secondary)] flex items-center justify-center gap-1">
+              <FontAwesomeIcon icon={faLocationDot} className="text-xs" />
+              <TextAnimate
+                animation="blurIn"
+                by="character"
+                delay={0.5}
+                once={true}
+              >
+                Yogyakarta, Indonesia
+              </TextAnimate>
+            </div>
           </div>
 
           {/* Social Icons with Animation */}
