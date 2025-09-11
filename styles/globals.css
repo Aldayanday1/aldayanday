@@ -91,3 +91,34 @@ body>div:last-child {
     display: none !important;
   }
 }
+
+/* Tabs: explicit active state styling (light mode) */
+.tabs button {
+  background-color: var(--card-background);
+  /* default capsule bg */
+  color: var(--text-secondary);
+  border: none;
+}
+
+/* active in light mode -> black bg, white text */
+.tabs button[data-active="true"] {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* hover for non-active */
+.tabs button:not([data-active="true"]):hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Dark mode overrides: active -> white bg, black text (as intended) */
+.dark .tabs button[data-active="true"] {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Dark mode non-active */
+.dark .tabs button {
+  background-color: var(--card-background);
+  color: var(--text-secondary);
+}
