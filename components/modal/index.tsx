@@ -1,10 +1,10 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import gsap from 'gsap';
 import styles from './style.module.css';
 
-// Interface untuk props
+// Tambahkan interface untuk props
 interface ModalProps {
     modal: {
         active: boolean;
@@ -13,6 +13,7 @@ interface ModalProps {
     certificates: Array<{
         src: string;
         color: string;
+        // Tambahkan properti lain jika ada, misal title: string;
     }>;
 }
 
@@ -22,105 +23,50 @@ const scaleAnimation = {
     closed: { scale: 0, x: "-50%", y: "-50%" }
 };
 
-export default function Modal({ modal, certificates }: ModalProps) {
+export default function index({ modal, certificates }: ModalProps) {
     const { active, index } = modal;
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
-    // Refs untuk GSAP
-    const modalContainer = useRef<HTMLDivElement>(null);
-    const cursor = useRef<HTMLDivElement>(null);
-    const cursorLabel = useRef<HTMLDivElement>(null);
+    // Tambahkan ref untuk GSAP
+    const modalContainer = useRef(null);
+    const cursorLabel = useRef(null);
+
+    // Deteksi tema
+    useEffect(() => {
+        const checkDarkMode = () => {
+            setIsDarkMode(document.documentElement.classList.contains('dark'));
+        };
+
+        checkDarkMode();
+
+        const observer = new MutationObserver(checkDarkMode);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
-        if (!modalContainer.current || !cursor.current || !cursorLabel.current) return;
+        // Move Container
+        let xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
+        let yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
+        // Move cursor label (gabung cursor dan label menjadi satu)
+        let xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
+        let yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
 
-        // GSAP quickTo functions
-        const xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
-        const yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
+        window.addEventListener('mousemove', (e) => {
+            const { pageX, pageY } = e;
+            xMoveContainer(pageX);
+            yMoveContainer(pageY);
+            xMoveCursorLabel(pageX);
+            yMoveCursorLabel(pageY);
+        });
 
-        const xMoveCursor = gsap.quickTo(cursor.current, "left", { duration: 0.5, ease: "power3" });
-        const yMoveCursor = gsap.quickTo(cursor.current, "top", { duration: 0.5, ease: "power3" });
-        const xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
-        const yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
-
-        const handleMovement = (pageX: number, pageY: number) => {
-            const isMobile = window.innerWidth <= 640;
-
-            // Ukuran modal berdasarkan device
-            const modalWidth = isMobile ? 300 : 400;
-            const modalHeight = isMobile ? 250 : 350;
-
-            let modalScale = 1;
-            let finalX = pageX;
-            let finalY = pageY;
-
-            if (isMobile) {
-                // Hitung jarak dari ujung layar
-                const edgeThreshold = 80;
-                const distanceFromLeft = pageX;
-                const distanceFromRight = window.innerWidth - pageX;
-                const distanceFromTop = pageY;
-                const distanceFromBottom = window.innerHeight - pageY;
-
-                // Dynamic scaling berdasarkan posisi
-                if (distanceFromLeft < edgeThreshold || distanceFromRight < edgeThreshold) {
-                    const minDistance = Math.min(distanceFromLeft, distanceFromRight);
-                    modalScale = Math.max(0.5, minDistance / edgeThreshold); // Scale 50%-100%
-                }
-
-                if (distanceFromTop < edgeThreshold || distanceFromBottom < edgeThreshold) {
-                    const minDistance = Math.min(distanceFromTop, distanceFromBottom);
-                    const verticalScale = Math.max(0.6, minDistance / edgeThreshold);
-                    modalScale = Math.min(modalScale, verticalScale);
-                }
-
-                // Clamp position dengan considerasi scale
-                const halfWidth = (modalWidth * modalScale) / 2;
-                const halfHeight = (modalHeight * modalScale) / 2;
-                const margin = 15; // Safety margin
-
-                finalX = Math.max(halfWidth + margin, Math.min(pageX, window.innerWidth - halfWidth - margin));
-                finalY = Math.max(halfHeight + margin, Math.min(pageY, window.innerHeight - halfHeight - margin));
-            }
-
-            // Apply transformations dengan null check
-            if (modalContainer.current) {
-                xMoveContainer(finalX);
-                yMoveContainer(finalY);
-                gsap.set(modalContainer.current, { scale: modalScale });
-            }
-
-            if (cursor.current && cursorLabel.current) {
-                xMoveCursor(finalX);
-                yMoveCursor(finalY);
-                xMoveCursorLabel(finalX);
-                yMoveCursorLabel(finalY);
-            }
-        };
-
-        // Mouse handler
-        const mouseHandler = (e: MouseEvent) => {
-            handleMovement(e.pageX, e.pageY);
-        };
-
-        // Touch handler untuk mobile
-        const touchHandler = (e: TouchEvent) => {
-            e.preventDefault();
-            if (e.touches.length > 0) {
-                const touch = e.touches[0];
-                handleMovement(touch.pageX, touch.pageY);
-            }
-        };
-
-        // Event listeners
-        window.addEventListener('mousemove', mouseHandler);
-        window.addEventListener('touchmove', touchHandler, { passive: false });
-        window.addEventListener('touchstart', touchHandler, { passive: false });
-
-        // Cleanup
+        // Cleanup event listener
         return () => {
-            window.removeEventListener('mousemove', mouseHandler);
-            window.removeEventListener('touchmove', touchHandler);
-            window.removeEventListener('touchstart', touchHandler);
+            window.removeEventListener('mousemove', () => { });
         };
     }, []);
 
@@ -135,8 +81,8 @@ export default function Modal({ modal, certificates }: ModalProps) {
                 className={styles.modalContainer}
             >
                 <div style={{ top: index * -100 + "%" }} className={styles.modalSlider}>
-                    {certificates.map((certificate, idx) => {
-                        const { src } = certificate;
+                    {certificates.map((project, idx) => {
+                        const { src } = project;  // Hapus color karena tidak digunakan
                         return (
                             <div
                                 className={styles.modal}
@@ -144,11 +90,10 @@ export default function Modal({ modal, certificates }: ModalProps) {
                             >
                                 <Image
                                     src={`/images/${src}`}
-                                    alt={`Certificate ${idx + 1}`}
+                                    alt={project.src || `certificate_${idx}`}
                                     fill
-                                    style={{ objectFit: 'contain' }}
+                                    style={{ objectFit: 'cover' }}
                                     sizes="(max-width: 768px) 100vw, 800px"
-                                    priority={idx === 0}
                                 />
                             </div>
                         );
@@ -156,20 +101,13 @@ export default function Modal({ modal, certificates }: ModalProps) {
                 </div>
             </motion.div>
             <motion.div
-                ref={cursor}
-                className={styles.cursor}
-                variants={scaleAnimation}
-                initial="initial"
-                animate={active ? "enter" : "closed"}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-            />
-            <motion.div
                 ref={cursorLabel}
                 className={styles.cursorLabel}
                 variants={scaleAnimation}
                 initial="initial"
                 animate={active ? "enter" : "closed"}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
+                data-theme={isDarkMode ? 'dark' : 'light'}
             >
                 View
             </motion.div>
