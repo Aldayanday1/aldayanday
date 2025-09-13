@@ -11,8 +11,7 @@ import { TextAnimate } from "@/components/magicui/text-animate";
 import GradualBlur from '@/components/GradualBlur';
 import LightRays from '@/components/LightRays';
 import tabsStyles from "@/components/Tabs.module.css";
-
-// import pageStyles from '@/components/page.module.css'
+import FullScreenModal from '@/components/FullScreenModal';
 import Credential from '@/components/project';
 import Modal from '@/components/modal';
 
@@ -20,6 +19,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("Project");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [modal, setModal] = useState({ active: false, index: 0 })
+  const [fullScreenModal, setFullScreenModal] = useState({ active: false, index: 0 })
 
   // add: desktop detection to only mount SplashCursor on desktop
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
@@ -251,10 +251,21 @@ export default function Home() {
     <main>
       <div>
         {certificate.map((certificate, index) => (
-          <Credential index={index} title={certificate.title} setModal={setModal} key={index} />
+          <Credential
+            index={index}
+            title={certificate.title}
+            setModal={setModal}
+            setFullScreenModal={setFullScreenModal}
+            key={index}
+          />
         ))}
       </div>
       <Modal modal={modal} certificates={certificate} />
+      <FullScreenModal
+        modal={fullScreenModal}
+        certificates={certificate}
+        onClose={() => setFullScreenModal({ active: false, index: 0 })}
+      />
     </main>
   );
 
