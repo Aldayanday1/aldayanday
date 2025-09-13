@@ -10,12 +10,16 @@ import SplashCursor from '@/components/SplashCursor';
 import { TextAnimate } from "@/components/magicui/text-animate";
 import GradualBlur from '@/components/GradualBlur';
 import LightRays from '@/components/LightRays';
-import styles from "@/components/Tabs.module.css";  // Tambahkan import ini
+import tabsStyles from "@/components/tabs.module.css";
 
+import pageStyles from '@/components/page.module.css'
+import Project from '@/components/project';
+import Modal from '@/components/modal';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Project");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [modal, setModal] = useState({ active: false, index: 0 })
 
   // add: desktop detection to only mount SplashCursor on desktop
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
@@ -186,6 +190,16 @@ export default function Home() {
     }
   ];
 
+
+  // projct-mouse-hover
+
+  const projects = [
+    { title: "Sertifikat HTML & CSS", src: "certif_certiport_html_css.jpg", color: "#ffffff" },
+    { title: "Sertifikat Cybersecurity", src: "certif_cyber.jpg", color: "#8C8C8C" },
+    { title: "Sertifikat Deploy Docker", src: "certif_deploy_docker.jpg", color: "#EFE8D3" },
+    { title: "Sertifikat Magang Kominfo", src: "certif_magang_kominfo.jpg", color: "#706D63" }
+  ]
+
   return (
     <>
       {/* LightRays Background - Only in Dark Mode */}
@@ -258,7 +272,7 @@ export default function Home() {
               transition={{ delay: 0.3, duration: 0.5 }}
             >
               <img
-                src="/profile.png"
+                src="images/profile.png"
                 alt="Profile"
                 className="w-full h-full object-cover"
                 style={{ objectPosition: 'center 10%' }}
@@ -361,13 +375,13 @@ export default function Home() {
         viewport={{ once: true }}
         transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
       >
-        <div className={styles.tabs}>
+        <div className={tabsStyles.tabs}>
           {tabs.map((tab) => (
             <motion.button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               data-active={activeTab === tab.id}
-              className={styles.tabBtn}
+              className={tabsStyles.tabBtn}
               variants={{
                 hidden: { opacity: 0, y: 20, scale: 0.8 },
                 show: { opacity: 1, y: 0, scale: 1 },
@@ -434,6 +448,17 @@ export default function Home() {
               </div>
             </article>
           ))}
+
+          <main className={pageStyles.main}>
+            <div className={pageStyles.body}>
+              {
+                projects.map((project, index) => {
+                  return <Project index={index} title={project.title} setModal={setModal} key={index} />
+                })
+              }
+            </div>
+            <Modal modal={modal} projects={projects} />
+          </main>
         </div>
       </motion.div>
 
