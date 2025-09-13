@@ -23,13 +23,13 @@ const scaleAnimation = {
     closed: { scale: 0, x: "-50%", y: "-50%" }
 };
 
-export default function index({ modal, certificates }: ModalProps) {
+export default function Modal({ modal, certificates }: ModalProps) { // Nama komponen diawali huruf besar
     const { active, index } = modal;
     const [isDarkMode, setIsDarkMode] = useState(false);
 
-    // Tambahkan ref untuk GSAP
-    const modalContainer = useRef(null);
-    const cursorLabel = useRef(null);
+    // Refs dengan tipe yang jelas
+    const modalContainer = useRef<HTMLDivElement | null>(null);
+    const cursorLabel = useRef<HTMLDivElement | null>(null);
 
     // Deteksi tema
     useEffect(() => {
@@ -38,7 +38,6 @@ export default function index({ modal, certificates }: ModalProps) {
         };
 
         checkDarkMode();
-
         const observer = new MutationObserver(checkDarkMode);
         observer.observe(document.documentElement, {
             attributes: true,
@@ -49,25 +48,24 @@ export default function index({ modal, certificates }: ModalProps) {
     }, []);
 
     useEffect(() => {
-        // Move Container
-        let xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
-        let yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
-        // Move cursor label (gabung cursor dan label menjadi satu)
-        let xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
-        let yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
+        if (!modalContainer.current || !cursorLabel.current) return;
 
-        window.addEventListener('mousemove', (e) => {
+        // gunakan const untuk quickTo (prefer-const)
+        const xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
+        const yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
+        const xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
+        const yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
+
+        const handler = (e: MouseEvent) => {
             const { pageX, pageY } = e;
             xMoveContainer(pageX);
             yMoveContainer(pageY);
             xMoveCursorLabel(pageX);
             yMoveCursorLabel(pageY);
-        });
-
-        // Cleanup event listener
-        return () => {
-            window.removeEventListener('mousemove', () => { });
         };
+
+        window.addEventListener('mousemove', handler);
+        return () => window.removeEventListener('mousemove', handler);
     }, []);
 
     return (
