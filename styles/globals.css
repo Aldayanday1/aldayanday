@@ -19,6 +19,8 @@
   --status-badge-border: #D1D5DB;
   --status-badge-text: #000000;
   --font-family: 'Quicksand', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --cursor-bg: #313131;
+  /* Dark grey for light mode */
 }
 
 /* Mode gelap ketika class 'dark' aktif */
@@ -38,6 +40,8 @@
   --status-badge-bg: rgba(0, 0, 0, 0.6);
   --status-badge-border: #4B5563;
   --status-badge-text: #FFFFFF;
+  --cursor-bg: #fff;
+  /* White for dark mode */
 }
 
 /* Hapus atau comment media query dark mode yang lama karena sekarang menggunakan class */

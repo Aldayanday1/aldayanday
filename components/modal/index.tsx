@@ -4,7 +4,7 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import styles from './style.module.css';
 
-// Tambahkan interface untuk props
+// Interface untuk props
 interface ModalProps {
     modal: {
         active: boolean;
@@ -13,7 +13,6 @@ interface ModalProps {
     certificates: Array<{
         src: string;
         color: string;
-        // Tambahkan properti lain jika ada, misal title: string;
     }>;
 }
 
@@ -23,91 +22,105 @@ const scaleAnimation = {
     closed: { scale: 0, x: "-50%", y: "-50%" }
 };
 
-export default function index({ modal, certificates }: ModalProps) {
+export default function Modal({ modal, certificates }: ModalProps) {
     const { active, index } = modal;
 
-    // Tambahkan ref untuk GSAP
-    const modalContainer = useRef<HTMLDivElement | null>(null);
-    const cursor = useRef<HTMLDivElement | null>(null);
-    const cursorLabel = useRef<HTMLDivElement | null>(null);
+    // Refs untuk GSAP
+    const modalContainer = useRef<HTMLDivElement>(null);
+    const cursor = useRef<HTMLDivElement>(null);
+    const cursorLabel = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const isMobile = window.innerWidth <= 640;
+        if (!modalContainer.current || !cursor.current || !cursorLabel.current) return;
 
-        // Move Container
+        // GSAP quickTo functions
         const xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
         const yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
-        const scaleContainer = gsap.quickTo(modalContainer.current, "scale", { duration: 0.8, ease: "power3" });
-        // Move cursor
+
         const xMoveCursor = gsap.quickTo(cursor.current, "left", { duration: 0.5, ease: "power3" });
         const yMoveCursor = gsap.quickTo(cursor.current, "top", { duration: 0.5, ease: "power3" });
-        // Move cursor label
         const xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
         const yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
 
-        const handleInteraction = (clientX: number, clientY: number) => {
+        const handleMovement = (pageX: number, pageY: number) => {
+            const isMobile = window.innerWidth <= 640;
+
+            // Ukuran modal berdasarkan device
             const modalWidth = isMobile ? 300 : 400;
             const modalHeight = isMobile ? 250 : 350;
 
-            // Clamp posisi agar tidak melebihi viewport
-            const clampedX = Math.max(modalWidth / 2, Math.min(clientX, window.innerWidth - modalWidth / 2));
-            const clampedY = Math.max(modalHeight / 2, Math.min(clientY, window.innerHeight - modalHeight / 2));
+            let modalScale = 1;
+            let finalX = pageX;
+            let finalY = pageY;
 
-            // Hitung scale berdasarkan jarak ke edge untuk responsive sizing
-            const distanceToRight = window.innerWidth - clientX;
-            const distanceToBottom = window.innerHeight - clientY;
-            const distanceToLeft = clientX;
-            const distanceToTop = clientY;
-
-            const minDistance = Math.min(distanceToRight, distanceToBottom, distanceToLeft, distanceToTop);
-
-            // Scale calculation berbeda untuk mobile vs desktop
-            let scale: number;
             if (isMobile) {
-                // Di mobile, scale lebih agresif untuk UX yang lebih baik
-                scale = Math.max(0.3, Math.min(1, minDistance / 100));
-            } else {
-                // Di desktop, scale lebih subtle
-                scale = Math.max(0.6, Math.min(1, minDistance / 200));
+                // Hitung jarak dari ujung layar
+                const edgeThreshold = 80;
+                const distanceFromLeft = pageX;
+                const distanceFromRight = window.innerWidth - pageX;
+                const distanceFromTop = pageY;
+                const distanceFromBottom = window.innerHeight - pageY;
+
+                // Dynamic scaling berdasarkan posisi
+                if (distanceFromLeft < edgeThreshold || distanceFromRight < edgeThreshold) {
+                    const minDistance = Math.min(distanceFromLeft, distanceFromRight);
+                    modalScale = Math.max(0.5, minDistance / edgeThreshold); // Scale 50%-100%
+                }
+
+                if (distanceFromTop < edgeThreshold || distanceFromBottom < edgeThreshold) {
+                    const minDistance = Math.min(distanceFromTop, distanceFromBottom);
+                    const verticalScale = Math.max(0.6, minDistance / edgeThreshold);
+                    modalScale = Math.min(modalScale, verticalScale);
+                }
+
+                // Clamp position dengan considerasi scale
+                const halfWidth = (modalWidth * modalScale) / 2;
+                const halfHeight = (modalHeight * modalScale) / 2;
+                const margin = 15; // Safety margin
+
+                finalX = Math.max(halfWidth + margin, Math.min(pageX, window.innerWidth - halfWidth - margin));
+                finalY = Math.max(halfHeight + margin, Math.min(pageY, window.innerHeight - halfHeight - margin));
             }
 
-            xMoveContainer(clampedX);
-            yMoveContainer(clampedY);
-            scaleContainer(scale);
-            xMoveCursor(clampedX);
-            yMoveCursor(clampedY);
-            xMoveCursorLabel(clampedX);
-            yMoveCursorLabel(clampedY);
+            // Apply transformations dengan null check
+            if (modalContainer.current) {
+                xMoveContainer(finalX);
+                yMoveContainer(finalY);
+                gsap.set(modalContainer.current, { scale: modalScale });
+            }
+
+            if (cursor.current && cursorLabel.current) {
+                xMoveCursor(finalX);
+                yMoveCursor(finalY);
+                xMoveCursorLabel(finalX);
+                yMoveCursorLabel(finalY);
+            }
         };
 
-        // Handler untuk desktop (mousemove)
+        // Mouse handler
         const mouseHandler = (e: MouseEvent) => {
-            handleInteraction(e.clientX, e.clientY);
+            handleMovement(e.pageX, e.pageY);
         };
 
-        // Handler untuk mobile (touchmove)
+        // Touch handler untuk mobile
         const touchHandler = (e: TouchEvent) => {
+            e.preventDefault();
             if (e.touches.length > 0) {
                 const touch = e.touches[0];
-                handleInteraction(touch.clientX, touch.clientY);
+                handleMovement(touch.pageX, touch.pageY);
             }
         };
 
         // Event listeners
-        if (isMobile) {
-            window.addEventListener('touchmove', touchHandler, { passive: false });
-            window.addEventListener('touchstart', touchHandler, { passive: false });
-        } else {
-            window.addEventListener('mousemove', mouseHandler);
-        }
+        window.addEventListener('mousemove', mouseHandler);
+        window.addEventListener('touchmove', touchHandler, { passive: false });
+        window.addEventListener('touchstart', touchHandler, { passive: false });
 
+        // Cleanup
         return () => {
-            if (isMobile) {
-                window.removeEventListener('touchmove', touchHandler);
-                window.removeEventListener('touchstart', touchHandler);
-            } else {
-                window.removeEventListener('mousemove', mouseHandler);
-            }
+            window.removeEventListener('mousemove', mouseHandler);
+            window.removeEventListener('touchmove', touchHandler);
+            window.removeEventListener('touchstart', touchHandler);
         };
     }, []);
 
@@ -122,8 +135,8 @@ export default function index({ modal, certificates }: ModalProps) {
                 className={styles.modalContainer}
             >
                 <div style={{ top: index * -100 + "%" }} className={styles.modalSlider}>
-                    {certificates.map((project, idx) => {
-                        const { src } = project;
+                    {certificates.map((certificate, idx) => {
+                        const { src } = certificate;
                         return (
                             <div
                                 className={styles.modal}
@@ -131,10 +144,11 @@ export default function index({ modal, certificates }: ModalProps) {
                             >
                                 <Image
                                     src={`/images/${src}`}
-                                    alt={project.src || `certificate_${idx}`}
+                                    alt={`Certificate ${idx + 1}`}
                                     fill
                                     style={{ objectFit: 'contain' }}
                                     sizes="(max-width: 768px) 100vw, 800px"
+                                    priority={idx === 0}
                                 />
                             </div>
                         );
@@ -148,7 +162,7 @@ export default function index({ modal, certificates }: ModalProps) {
                 initial="initial"
                 animate={active ? "enter" : "closed"}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-            ></motion.div>
+            />
             <motion.div
                 ref={cursorLabel}
                 className={styles.cursorLabel}
