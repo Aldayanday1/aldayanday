@@ -10,6 +10,7 @@ import SplashCursor from '@/components/SplashCursor';
 import { TextAnimate } from "@/components/magicui/text-animate";
 import GradualBlur from '@/components/GradualBlur';
 import LightRays from '@/components/LightRays';
+import styles from "@/components/Tabs.module.css";  // Tambahkan import ini
 
 
 export default function Home() {
@@ -220,7 +221,7 @@ export default function Home() {
           <div className="relative py-4 sm:py-6">
             {/* Status Badge with Animation */}
             <motion.div
-              className="absolute -top-8 sm:-top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 text-xs px-2 sm:px-3 py-1 rounded-full border"
+              className="absolute -top-10 sm:-top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 text-xs px-2 sm:px-3 py-1 rounded-full border"
               style={{
                 backgroundColor: 'var(--status-badge-bg)',
                 borderColor: 'var(--status-badge-border)',
@@ -295,7 +296,14 @@ export default function Home() {
               I spend most of time thinking about Tea.
             </TextAnimate>
             <div className="text-xs text-[var(--text-secondary)] flex items-center justify-center gap-1">
-              <FontAwesomeIcon icon={faLocationDot} className="text-xs" />
+              <motion.div
+                initial={{ opacity: 0, filter: 'blur(10px)' }}
+                whileInView={{ opacity: 1, filter: 'blur(0px)' }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.45, duration: 0.5 }}
+              >
+                <FontAwesomeIcon icon={faLocationDot} className="text-xs" />
+              </motion.div>
               <TextAnimate
                 animation="blurIn"
                 by="character"
@@ -345,7 +353,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Navigation Tabs and Content Section with Same Animation */}
+      {/* Navigation Tabs and Content Section */}
       <motion.div
         className="w-full max-w-7xl mx-auto px-2 pb-6 mt-[-4rem]"
         initial={{ opacity: 0, y: 2, scale: 0.95 }}
@@ -353,16 +361,21 @@ export default function Home() {
         viewport={{ once: true }}
         transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
       >
-        <div className="flex gap-2 mb-8 justify-center overflow-x-auto scrollbar-hide tabs">
+        <div className={styles.tabs}>
           {tabs.map((tab) => (
-            <button
+            <motion.button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               data-active={activeTab === tab.id}
-              className="px-2 py-1 text-[0.7rem] sm:px-4 sm:py-2 sm:text-xs font-medium rounded-full transition-all duration-200 whitespace-nowrap min-w-[48px]"
+              className={styles.tabBtn}
+              variants={{
+                hidden: { opacity: 0, y: 20, scale: 0.8 },
+                show: { opacity: 1, y: 0, scale: 1 },
+              }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             >
               {tab.label}
-            </button>
+            </motion.button>
           ))}
         </div>
 

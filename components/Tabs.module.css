@@ -1,0 +1,45 @@
+/* Tabs: explicit active state styling (light mode) */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 2rem;
+}
+
+.tabs button {
+  background-color: var(--card-background);
+  /* default capsule bg */
+  color: var(--text-secondary);
+  border: none;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  border-radius: 9999px;
+  transition: all 0.2s;
+  min-width: 48px;
+  white-space: nowrap;
+}
+
+/* active in light mode -> black bg, white text */
+.tabs button[data-active="true"] {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* hover for non-active */
+.tabs button:not([data-active="true"]):hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Dark mode overrides: active -> white bg, black text */
+:global(.dark) .tabs button[data-active="true"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Dark mode non-active */
+:global(.dark) .tabs button {
+  background-color: var(--card-background);
+  color: var(--text-secondary);
+}
