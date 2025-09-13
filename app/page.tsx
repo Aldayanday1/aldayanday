@@ -459,6 +459,7 @@ export default function Home() {
             </div>
             <Modal modal={modal} projects={projects} />
           </main>
+          
         </div>
       </motion.div>
 

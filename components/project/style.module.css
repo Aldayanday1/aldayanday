@@ -36,3 +36,41 @@
     transition: all 0.4s;
     font-weight: 300;
 }
+
+/* Responsive: treat mobile as <640px (tailwind 'sm' breakpoint) */
+/* On small screens stack content, reduce paddings and font sizes */
+@media (max-width: 640px) {
+    .project {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 12px 16px;
+        /* reduced padding for mobile */
+        gap: 8px;
+    }
+
+    .project:last-of-type {
+        border-bottom: 1px solid rgb(201, 201, 201);
+    }
+
+    .project:hover {
+        /* touch devices don't usually have hover; keep subtle */
+        opacity: 1;
+    }
+
+    .project:hover h2,
+    .project:hover p {
+        transform: none;
+    }
+
+    .project h2 {
+        font-size: 1.125rem;
+        /* ~sm size */
+        line-height: 1.2;
+    }
+
+    .project p {
+        font-size: 0.9rem;
+        margin: 0;
+    }
+}
