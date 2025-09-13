@@ -23,39 +23,36 @@ const scaleAnimation = {
     closed: { scale: 0, x: "-50%", y: "-50%" }
 };
 
-export default function index({ modal, certificate }: ModalProps) {
+export default function Modal({ modal, certificate }: ModalProps) {  // Ubah nama fungsi ke Modal (huruf besar)
     const { active, index } = modal;
 
-    // Tambahkan ref untuk GSAP
-    const modalContainer = useRef(null);
-    const cursor = useRef(null);
-    const cursorLabel = useRef(null);
+    const modalContainer = useRef<HTMLDivElement | null>(null);
+    const cursor = useRef<HTMLDivElement | null>(null);
+    const cursorLabel = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        // Move Container
-        let xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
-        let yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
-        // Move cursor
-        let xMoveCursor = gsap.quickTo(cursor.current, "left", { duration: 0.5, ease: "power3" });
-        let yMoveCursor = gsap.quickTo(cursor.current, "top", { duration: 0.5, ease: "power3" });
-        // Move cursor label
-        let xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
-        let yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
+        if (!modalContainer.current || !cursor.current || !cursorLabel.current) return;
 
-        window.addEventListener('mousemove', (e) => {
-            const { pageX, pageY } = e;
+        const xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
+        const yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
+        const xMoveCursor = gsap.quickTo(cursor.current, "left", { duration: 0.5, ease: "power3" });
+        const yMoveCursor = gsap.quickTo(cursor.current, "top", { duration: 0.5, ease: "power3" });
+        const xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
+        const yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
+
+        const handler = (e: MouseEvent) => {
+            const pageX = (e as MouseEvent).pageX;
+            const pageY = (e as MouseEvent).pageY;
             xMoveContainer(pageX);
             yMoveContainer(pageY);
             xMoveCursor(pageX);
             yMoveCursor(pageY);
             xMoveCursorLabel(pageX);
             yMoveCursorLabel(pageY);
-        });
-
-        // Cleanup event listener
-        return () => {
-            window.removeEventListener('mousemove', () => { });
         };
+
+        window.addEventListener('mousemove', handler);
+        return () => window.removeEventListener('mousemove', handler);
     }, []);
 
     return (
@@ -70,24 +67,25 @@ export default function index({ modal, certificate }: ModalProps) {
             >
                 <div style={{ top: index * -100 + "%" }} className={styles.modalSlider}>
                     {certificate.map((certificate, idx) => {
-                        const { src, color } = certificate;
+                        const { src } = certificate;
                         return (
                             <div
                                 className={styles.modal}
-                                style={{ backgroundColor: color }}
                                 key={`modal_${idx}`}
                             >
                                 <Image
                                     src={`/images/${src}`}
-                                    width={300}
-                                    height={0}
-                                    alt="image"
+                                    alt={certificate.src || `certificates_${idx}`}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                    sizes="(max-width: 768px) 100vw, 800px"
                                 />
                             </div>
                         );
                     })}
                 </div>
             </motion.div>
+
             <motion.div
                 ref={cursor}
                 className={styles.cursor}
@@ -95,7 +93,8 @@ export default function index({ modal, certificate }: ModalProps) {
                 initial="initial"
                 animate={active ? "enter" : "closed"}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-            ></motion.div>
+            />
+
             <motion.div
                 ref={cursorLabel}
                 className={styles.cursorLabel}

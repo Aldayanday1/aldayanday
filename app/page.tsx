@@ -273,7 +273,7 @@ export default function Home() {
       <div className="w-full max-w-2xl mx-auto space-y-6">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Get In Touch</h2>
-          <p className="text-[var(--text-secondary)]">Let's connect and work together</p>
+          <p className="text-[var(--text-secondary)]">Let&apos;s connect and work together</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {contacts.map((contact, index) => (
@@ -301,7 +301,7 @@ export default function Home() {
         </div>
         <div className="text-center mt-8 p-6 bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl">
           <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
-            I'm always open to discussing new opportunities, collaborations, or just having a friendly chat about technology and development.
+            I&apos;m always open to discussing new opportunities, collaborations, or just having a friendly chat about technology and development.
           </p>
         </div>
       </div>
