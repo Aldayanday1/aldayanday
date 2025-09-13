@@ -26,6 +26,7 @@ const scaleAnimation = {
 export default function Modal({ modal, certificates }: ModalProps) { // Nama komponen diawali huruf besar
     const { active, index } = modal;
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     // Refs dengan tipe yang jelas
     const modalContainer = useRef<HTMLDivElement | null>(null);
@@ -45,6 +46,14 @@ export default function Modal({ modal, certificates }: ModalProps) { // Nama kom
         });
 
         return () => observer.disconnect();
+    }, []);
+
+    // Deteksi mobile (untuk hide cursor/label)
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(typeof window !== 'undefined' && window.innerWidth <= 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     useEffect(() => {
@@ -98,17 +107,21 @@ export default function Modal({ modal, certificates }: ModalProps) { // Nama kom
                     })}
                 </div>
             </motion.div>
-            <motion.div
-                ref={cursorLabel}
-                className={styles.cursorLabel}
-                variants={scaleAnimation}
-                initial="initial"
-                animate={active ? "enter" : "closed"}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                data-theme={isDarkMode ? 'dark' : 'light'}
-            >
-                View
-            </motion.div>
+
+            {/* hanya render cursor/label di non-mobile */}
+            {!isMobile && (
+                <motion.div
+                    ref={cursorLabel}
+                    className={styles.cursorLabel}
+                    variants={scaleAnimation}
+                    initial="initial"
+                    animate={active ? "enter" : "closed"}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    data-theme={isDarkMode ? 'dark' : 'light'}
+                >
+                    View
+                </motion.div>
+            )}
         </>
     );
 }
