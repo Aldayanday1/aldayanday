@@ -12,8 +12,8 @@ import GradualBlur from '@/components/GradualBlur';
 import LightRays from '@/components/LightRays';
 import tabsStyles from "@/components/Tabs.module.css";
 
-import pageStyles from '@/components/page.module.css'
-import Project from '@/components/project';
+// import pageStyles from '@/components/page.module.css'
+import Credential from '@/components/project';
 import Modal from '@/components/modal';
 
 export default function Home() {
@@ -237,7 +237,7 @@ export default function Home() {
     </>
   );
 
-  // 4. Credentials - Keep existing (with project list)
+  // 4. Credentials - Keep existing 
 
   // data-certificate
   const certificate = [
@@ -248,13 +248,13 @@ export default function Home() {
   ]
 
   const renderCredentials = () => (
-    <main className={pageStyles.main}>
-      <div className={pageStyles.body}>
+    <main>
+      <div>
         {certificate.map((certificate, index) => (
-          <Project index={index} title={certificate.title} setModal={setModal} key={index} />
+          <Credential index={index} title={certificate.title} setModal={setModal} key={index} />
         ))}
       </div>
-      <Modal modal={modal} certificate={certificate} />
+      <Modal modal={modal} certificates={certificate} />
     </main>
   );
 
@@ -329,7 +329,7 @@ export default function Home() {
       )}
 
       {/* SplashCursor: only render on desktop to avoid mobile cost */}
-      {isDesktop && <SplashCursor />}
+      {/* {isDesktop && <SplashCursor />} */}
 
       {/* Theme toggler */}
       <div className="fixed top-4 right-4 z-50">
@@ -406,9 +406,10 @@ export default function Home() {
               once={true}  // Tambahkan ini
               className="text-base sm:text-lg font-bold text-[var(--text-secondary)]"
             >
-              Fullstack Developer
+              Im a Fullstack Developer.
+
             </TextAnimate>
-            <TextAnimate
+            {/* <TextAnimate
               animation="blurIn"
               by="character"
               delay={0.4}
@@ -416,7 +417,7 @@ export default function Home() {
               className="text-sm text-[var(--text-secondary)]"
             >
               I spend most of time thinking about Tea.
-            </TextAnimate>
+            </TextAnimate> */}
             <div className="text-xs text-[var(--text-secondary)] flex items-center justify-center gap-1">
               <motion.div
                 initial={{ opacity: 0, filter: 'blur(10px)' }}

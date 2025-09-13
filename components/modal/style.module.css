@@ -2,12 +2,24 @@
     height: 350px;
     width: 400px;
     position: absolute;
-    background-color: white;
     overflow: hidden;
     pointer-events: none;
     display: flex;
     align-items: center;
     justify-content: center;
+    transform-origin: center;
+    /* Pastikan scale dari center */
+    transition: transform 0.3s ease-out;
+    /* Smooth transition untuk scale */
+}
+
+/* Responsive: kurangi ukuran di mobile (max-width: 640px) */
+@media (max-width: 640px) {
+    .modalContainer {
+        height: 150px;
+        width: 200px;
+        /* Hapus max-width dan max-height karena sudah ada logic di JS */
+    }
 }
 
 .modalSlider {
@@ -23,10 +35,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    /* Tambahkan border radius untuk tampilan lebih smooth */
 }
 
-.modal img {
-    height: auto;
+/* Tambahkan untuk memastikan Image full */
+.modal :global(img) {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    transition: all 0.3s ease;
+    /* Smooth transition untuk gambar */
 }
 
 .cursor,
@@ -44,6 +65,19 @@
     font-size: 14px;
     font-weight: 300;
     pointer-events: none;
+    transition: all 0.3s ease;
+    /* Smooth transition untuk cursor */
+}
+
+/* Responsive cursor di mobile */
+@media (max-width: 640px) {
+
+    .cursor,
+    .cursorLabel {
+        width: 60px;
+        height: 60px;
+        font-size: 12px;
+    }
 }
 
 .cursorLabel {
