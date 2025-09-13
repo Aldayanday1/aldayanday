@@ -7,7 +7,7 @@ export default function index({ index, title, setModal }: { index: number; title
     return (
         <div onMouseEnter={() => { setModal({ active: true, index }) }} onMouseLeave={() => { setModal({ active: false, index }) }} className={styles.project}>
             <h2>{title}</h2>
-            <p>Design & Development</p>
+            <p>Certificate</p>
         </div>
     )
 }

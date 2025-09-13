@@ -4,14 +4,16 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import styles from './style.module.css';
 
+// Tambahkan interface untuk props
 interface ModalProps {
     modal: {
         active: boolean;
         index: number;
     };
-    projects: Array<{
+    certificate: Array<{
         src: string;
         color: string;
+        // Tambahkan properti lain jika ada, misal title: string;
     }>;
 }
 
@@ -21,57 +23,40 @@ const scaleAnimation = {
     closed: { scale: 0, x: "-50%", y: "-50%" }
 };
 
-export default function index({ modal, projects }: ModalProps) {
+export default function index({ modal, certificate }: ModalProps) {
     const { active, index } = modal;
 
-    const modalContainer = useRef<HTMLDivElement | null>(null);
-    const cursor = useRef<HTMLDivElement | null>(null);
-    const cursorLabel = useRef<HTMLDivElement | null>(null);
+    // Tambahkan ref untuk GSAP
+    const modalContainer = useRef(null);
+    const cursor = useRef(null);
+    const cursorLabel = useRef(null);
 
     useEffect(() => {
-        if (!modalContainer.current || !cursor.current || !cursorLabel.current) return;
+        // Move Container
+        let xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
+        let yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
+        // Move cursor
+        let xMoveCursor = gsap.quickTo(cursor.current, "left", { duration: 0.5, ease: "power3" });
+        let yMoveCursor = gsap.quickTo(cursor.current, "top", { duration: 0.5, ease: "power3" });
+        // Move cursor label
+        let xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
+        let yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
 
-        const xMoveContainer = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" });
-        const yMoveContainer = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" });
-        const xMoveCursor = gsap.quickTo(cursor.current, "left", { duration: 0.5, ease: "power3" });
-        const yMoveCursor = gsap.quickTo(cursor.current, "top", { duration: 0.5, ease: "power3" });
-        const xMoveCursorLabel = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" });
-        const yMoveCursorLabel = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" });
-
-        const mouseHandler = (e: MouseEvent) => {
+        window.addEventListener('mousemove', (e) => {
             const { pageX, pageY } = e;
-            xMoveContainer(pageX); yMoveContainer(pageY);
-            xMoveCursor(pageX); yMoveCursor(pageY);
-            xMoveCursorLabel(pageX); yMoveCursorLabel(pageY);
-        };
+            xMoveContainer(pageX);
+            yMoveContainer(pageY);
+            xMoveCursor(pageX);
+            yMoveCursor(pageY);
+            xMoveCursorLabel(pageX);
+            yMoveCursorLabel(pageY);
+        });
 
-        const touchHandler = (e: TouchEvent) => {
-            const t = e.touches[0] || e.changedTouches[0];
-            if (!t) return;
-            xMoveContainer(t.pageX); yMoveContainer(t.pageY);
-            xMoveCursor(t.pageX); yMoveCursor(t.pageY);
-            xMoveCursorLabel(t.pageX); yMoveCursorLabel(t.pageY);
-        };
-
-        window.addEventListener('mousemove', mouseHandler);
-        window.addEventListener('touchmove', touchHandler, { passive: true });
-
+        // Cleanup event listener
         return () => {
-            window.removeEventListener('mousemove', mouseHandler);
-            window.removeEventListener('touchmove', touchHandler);
+            window.removeEventListener('mousemove', () => { });
         };
     }, []);
-
-    useEffect(() => {
-        if (!modalContainer.current) return;
-
-        if (active) {
-            const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-            if (isTouch) {
-                gsap.set(modalContainer.current, { left: "50%", top: "50%", xPercent: -50, yPercent: -50 });
-            }
-        }
-    }, [active]);
 
     return (
         <>
@@ -84,8 +69,8 @@ export default function index({ modal, projects }: ModalProps) {
                 className={styles.modalContainer}
             >
                 <div style={{ top: index * -100 + "%" }} className={styles.modalSlider}>
-                    {projects.map((project, idx) => {
-                        const { src, color } = project;
+                    {certificate.map((certificate, idx) => {
+                        const { src, color } = certificate;
                         return (
                             <div
                                 className={styles.modal}
