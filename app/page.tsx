@@ -10,7 +10,7 @@ import SplashCursor from '@/components/SplashCursor';
 import { TextAnimate } from "@/components/magicui/text-animate";
 import GradualBlur from '@/components/GradualBlur';
 import LightRays from '@/components/LightRays';
-import tabsStyles from "@/components/tabs.module.css";
+import tabsStyles from "@/components/Tabs.module.css";
 
 import pageStyles from '@/components/page.module.css'
 import Project from '@/components/project';
