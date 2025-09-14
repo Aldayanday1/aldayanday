@@ -1,45 +1,90 @@
-/* Tabs: explicit active state styling (light mode) */
+/* Tabs: only active has capsule styling */
 .tabs {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin-bottom: 2rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    overflow-x: auto;
+    /* Tetap untuk scroll horizontal jika perlu */
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 2rem;
+    /* Tambahkan padding lebih besar untuk memberi ruang gerakan bebas */
+    padding: 2rem 2rem;
+    /* Naikkan dari 0 1rem ke 2rem untuk ruang atas/bawah */
+    /* Pastikan tidak ada batasan overflow yang membatasi gerakan */
+    overflow: visible;
+    /* Ubah dari auto ke visible agar gerakan tidak terbatas */
 }
 
-.tabs button {
-  background-color: var(--card-background);
-  /* default capsule bg */
-  color: var(--text-secondary);
-  border: none;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.7rem;
-  border-radius: 9999px;
-  transition: all 0.2s;
-  min-width: 48px;
-  white-space: nowrap;
+/* Tambahkan class .tabBtn yang digunakan di page.tsx */
+.tabBtn {
+    box-sizing: border-box;
+    /* include border dalam ukuran */
+    height: 30px;
+    /* tetapkan tinggi selalu */
+    padding: 0 0.8rem;
+    /* horizontal padding tetap */
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    /* reserve border space */
+    cursor: pointer;
+    /* pastikan default (non-active) warna teks abu-abu di light mode */
+    color: var(--text-secondary);
+    /* Tambahkan position relative untuk gerakan bebas */
+    position: relative;
+    /* Pastikan z-index cukup tinggi agar tidak tertutup */
+    z-index: 10;
 }
 
-/* active in light mode -> black bg, white text */
-.tabs button[data-active="true"] {
-  background-color: #000000;
-  color: #ffffff;
+/* non-active explicit rule (keamanan jika inheritance override) */
+.tabBtn:not([data-active="true"]) {
+    color: var(--text-secondary) !important;
 }
 
-/* hover for non-active */
-.tabs button:not([data-active="true"]):hover {
-  background-color: rgba(0, 0, 0, 0.06);
+/* Active: capsule styling untuk .tabBtn (lebih ramping) */
+.tabBtn[data-active="true"] {
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    border-color: transparent;
+    /* masih transparan (border space tetap) */
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+    /* visual tanpa mempengaruhi layout */
 }
 
-/* Dark mode overrides: active -> white bg, black text */
-:global(.dark) .tabs button[data-active="true"] {
-  background-color: #ffffff !important;
-  color: #000000 !important;
+/* Dark mode overrides untuk .tabBtn */
+:global(.dark) .tabBtn[data-active="true"] {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
 }
 
-/* Dark mode non-active */
-:global(.dark) .tabs button {
-  background-color: var(--card-background);
-  color: var(--text-secondary);
+/* Dark mode non-active untuk .tabBtn */
+:global(.dark) .tabBtn:not([data-active="true"]) {
+    color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .tabs {
+        padding: 1.5rem 1.5rem;
+        /* Sesuaikan padding di mobile */
+        overflow: visible;
+        /* Tetap visible di mobile */
+    }
+
+    .tabBtn {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.7rem;
+        height: 26px;
+    }
+
+    .tabBtn[data-active="true"] {
+        padding: 0.12rem 0.8rem;
+        height: 28px;
+    }
 }

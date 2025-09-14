@@ -5,15 +5,21 @@ import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggle
 import { motion } from "motion/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faYoutube, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';  // Tambahkan import ini
+import { faLocationDot, faArrowRight } from '@fortawesome/free-solid-svg-icons';  // Tambahkan import ini
 import SplashCursor from '@/components/SplashCursor';
 import { TextAnimate } from "@/components/magicui/text-animate";
 import GradualBlur from '@/components/GradualBlur';
 import LightRays from '@/components/LightRays';
-import tabsStyles from "@/components/Tabs.module.css";
 import FullScreenModal from '@/components/FullScreenModal';
 import Credential from '@/components/project';
 import Modal from '@/components/modal';
+import Magnet from '@/components/MagneticGSAP';
+import LogoLoop from '@/components/LogoLoop';
+import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
+import LiquidEther from '@/components/LiquidEther';
+
+// Tambahkan import yang benar untuk CSS module
+import tabsStyles from "@/components/tabs.module.css";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Project");
@@ -47,7 +53,7 @@ export default function Home() {
   }, []);
 
   const tabs = [
-    { id: "About me", label: "About me" },
+    { id: "About", label: "About" },
     { id: "Stack", label: "Stack" },
     { id: "Project", label: "Project" },
     { id: "Credentials", label: "Credentials" },
@@ -56,7 +62,7 @@ export default function Home() {
 
   const getContentByTab = () => {
     switch (activeTab) {
-      case "About me": return renderAboutMe();
+      case "About": return renderAboutMe();
       case "Stack": return renderStack();
       case "Project": return renderProject();
       case "Credentials": return renderCredentials();
@@ -147,94 +153,183 @@ export default function Home() {
 
   // data projects
   const projects = [
-    {
-      id: 1,
-      title: "E-Commerce Platform",
-      description: "Full-stack e-commerce application built with Laravel backend and React frontend. Features include user authentication, product catalog, shopping cart, payment integration, and admin dashboard.",
-      logo: "🛒",
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop", // E-commerce related image from Unsplash
-      buttonText: "View Project",
-      link: "https://github.com/your-username/ecommerce-project"
-    },
+    // {
+    //   id: 1,
+    //   title: "E-Commerce Platform",
+    //   description: "Full-stack e-commerce app with Laravel backend and React frontend. Includes auth, catalog, cart, payments, and admin dashboard.",
+    //   logo: "🛒",
+    //   image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop", // E-commerce related image from Unsplash
+    //   buttonText: "View Project",
+    //   link: "https://github.com/your-username/ecommerce-project"
+    // },
     {
       id: 2,
       title: "Task Management App",
-      description: "Modern task management application built with Next.js and TypeScript. Includes real-time collaboration, drag & drop functionality, team management, and progress tracking.",
+      description: "Task app built with Next.js and TypeScript. Features real-time collab, drag & drop, team management, and progress tracking.",
       logo: "📋",
-      image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=600&fit=crop", // Task management related image from Unsplash
+      image: "/images/image.png", // Task management related image from Unsplash
       buttonText: "View Demo",
       link: "https://github.com/your-username/task-app"
     },
     {
       id: 3,
       title: "Weather Dashboard",
-      description: "Responsive weather dashboard using React and external APIs. Features location-based weather data, 7-day forecasts, interactive maps, and customizable weather alerts.",
+      description: "Responsive weather dashboard with React and APIs. Shows location-based data, 7-day forecasts, maps, and alerts.",
       logo: "🌤️",
-      image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=800&h=600&fit=crop", // Weather related image from Unsplash
+      image: "/images/projects-1.png", // Weather related image from Unsplash
       buttonText: "Live Demo",
       link: "https://github.com/your-username/weather-dashboard"
     },
     {
       id: 4,
       title: "Social Media API",
-      description: "RESTful API built with Node.js and Express for social media platform. Includes user authentication, post management, real-time messaging, and comprehensive documentation.",
+      description: "RESTful API for social media using Node.js and Express. Includes auth, posts, messaging, and docs.",
       logo: "🔗",
-      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&h=600&fit=crop", // Social media related image from Unsplash
+      image: "/images/projects-2.png", // Social media related image from Unsplash
       buttonText: "Documentation",
       link: "https://github.com/your-username/social-api"
     }
   ];
 
+  const techLogos = [
+    { node: <SiReact />, title: "React", href: "https://react.dev" },
+    { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
+    { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
+    { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+  ];
+
   const renderProject = () => (
-    <>
+    <div className="w-full max-w-2xl mx-auto space-y-6">
       {projects.map((item, index) => (
-        <article
+        <motion.article
           key={index}
-          className="w-full max-w-2xl mx-auto bg-[var(--card-background)] border border-[var(--card-border)] rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 mb-4"
+          className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative"
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          whileHover={{
+            // scale: 1.02,
+            y: -16,
+            boxShadow: isDarkMode
+              ? "0 30px 70px rgba(2,6,23,0.7), 0 8px 30px rgba(0,0,0,0.25)"
+              : "0 22px 60px rgba(2,6,23,0.08), 0 8px 24px rgba(2,6,23,0.06)"
+          }}
+          // transition={{ type: "spring", stiffness: 140, damping: 16 }}
+          style={{
+            boxShadow: isDarkMode
+              ? "0 16px 40px rgba(2,6,23,0.5), 0 6px 18px rgba(0,0,0,0.2)"
+              : "0 10px 30px rgba(15,23,42,0.06), 0 4px 12px rgba(2,6,23,0.04)",
+            border: "1px solid rgba(0,0,0,0.04)"
+          }}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-            <div className="flex flex-col justify-between">
-              <div className="flex flex-col gap-4 mr-5">
-                <div className="w-12 h-12 rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-lg shadow-sm shrink-0">
+          {/* Left Content Section */}
+          <div className="flex items-stretch">
+            {/* Text Content - Left Side */}
+            <div className="flex-1 p-6 flex flex-col justify-between">
+              {/* Header - Logo Above Title */}
+              <div className="mb-2">
+                <div className="w-10 h-10 rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-base shadow-sm mb-9">
                   {item.logo}
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[var(--text-primary)]">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-[var(--text-secondary)] mt-2 leading-relaxed">
-                    {item.description}
-                  </p>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)] text-left mb-1">
+                  {item.title}
+                </h3>
+              </div>
+
+              {/* Description */}
+              <div className="mb-6">
+                <p className="text-xs font-semibold text-[var(--text-secondary)] leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+
+              {/* Action Button and LogoLoop */}
+              <div className="flex justify-between items-center">
+                <div className="flex justify-start items-center">
+                  <a
+                    href={item.link ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={item.buttonText}
+                    className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-sm font-medium 
+                   bg-[var(--background)] text-[var(--text-primary)] 
+                   border border-[var(--text-primary)] shadow-sm 
+                   ${isDarkMode
+                        ? 'hover:bg-[var(--background)] hover:text-[var(--text-primary)] hover:border-[var(--text-primary)]'
+                        : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                      } 
+                   transition-colors duration-150 group`}
+                  >
+                    <span className="leading-none text-[11px] font-semibold">{item.buttonText}</span>
+                    <FontAwesomeIcon
+                      icon={faArrowRight}
+                      className="text-[10px] leading-none text-gray-400 transition-transform duration-150 group-hover:translate-x-1"
+                    />
+                  </a>
                 </div>
-              </div>
-              <div className="mt-6">
-                <button
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border border-[var(--button-border)] bg-[var(--button-background)] hover:bg-[var(--button-hover)] transition mx-auto text-[var(--text-primary)]"
-                  aria-label={item.buttonText}
-                >
-                  {item.buttonText} →
-                </button>
-              </div>
-            </div>
-            <div className="w-full">
-              {item.image ? (
-                <div className="rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 shadow-inner">
-                  <img
-                    src={item.image}
-                    alt={`${item.title} preview`}
-                    className="w-full h-48 sm:h-56 object-cover"
+
+                {/* LogoLoop di samping kanan button */}
+                <div style={{ height: '30px', width: '120px', position: 'relative', overflow: 'hidden' }}>
+                  <LogoLoop
+                    logos={techLogos}
+                    speed={80}
+                    direction="right"
+                    logoHeight={20}
+                    gap={10}
+                    pauseOnHover
+                    scaleOnHover
+                    fadeOut
+                    // fadeOutColor={isDarkMode ? "#ffffff" : "#000000"}
+                    ariaLabel="Technology partners"
                   />
                 </div>
-              ) : (
-                <div className="rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center h-48 sm:h-56">
-                  <span className="text-sm text-[var(--text-secondary)]">Preview not available</span>
-                </div>
-              )}
+              </div>
+
             </div>
+
+            {/* Image - Right Side (visually extended without changing left padding) */}
+            {item.image && (
+              <div className="w-1/2 flex items-end">
+                <div className="w-full p-4 pt-0 flex justify-end">
+                  <div
+                    className="rounded-[10px] overflow-hidden bg-gray-50 dark:bg-gray-800"
+                    style={{
+                      position: 'absolute',
+                      right: '-2rem',
+                      top: '55%',
+                      width: '55%',
+                      maxWidth: '820px',
+                      height: '320px',
+                      transform: 'translateY(-40%) translateX(-2%)',
+                      transition: 'transform 280ms ease, box-shadow 220ms ease',
+                      boxShadow: isDarkMode
+                        ? '0 28px 60px rgba(2,6,23,0.55), 0 10px 30px rgba(0,0,0,0.25)'
+                        : '0 20px 40px rgba(2,6,23,0.08), 0 6px 18px rgba(2,6,23,0.06)'
+                    }}
+                  >
+                    <img
+                      src={item.image}
+                      alt={`${item.title} preview`}
+                      className="block"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: index === 0 ? 'left center' : // Task Management - show top part
+                          index === 1 ? 'left center' : // Weather Dashboard - show left part  
+                            index === 2 ? 'center center' : // Social Media API - show right part
+                              'center center', // default center
+                        filter: 'contrast(1.02) saturate(1.03)'
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </article>
+        </motion.article>
       ))}
-    </>
+    </div>
   );
 
   // 4. Credentials - Keep existing 
@@ -323,19 +418,25 @@ export default function Home() {
     <>
       {/* LightRays Background - Only in Dark Mode */}
       {isDarkMode && (
-        <div className="fixed inset-0 -z-10">
-          <LightRays
-            raysOrigin="top-center"
-            raysColor="#ffffff"
-            raysSpeed={1.5}
-            lightSpread={0.8}
-            rayLength={1.2}
-            followMouse={true}
-            mouseInfluence={0.1}
-            noiseAmount={0.1}
-            distortion={0.05}
-            className="custom-rays"
-          />
+        <div className="fixed inset-0 -z-10 pointer-events-none">
+          {/* <LiquidEther
+            colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+            mouseForce={0}           // Tidak ada efek mouse
+            cursorSize={0}           // Tidak ada efek cursor
+            isViscous={false}
+            viscous={30}
+            iterationsViscous={32}
+            iterationsPoisson={32}
+            resolution={0.5}
+            isBounce={false}
+            autoDemo={true}          // Animasi otomatis aktif
+            autoSpeed={0.5}
+            autoIntensity={2.2}
+            takeoverDuration={0.25}
+            autoResumeDelay={3000}
+            autoRampDuration={0.6}
+            style={{ pointerEvents: 'none' }} // Tidak menangkap event mouse
+          /> */}
         </div>
       )}
 
@@ -489,27 +590,34 @@ export default function Home() {
 
       {/* Navigation Tabs and Content Section */}
       <motion.div
-        className="w-full max-w-7xl mx-auto px-2 pb-6 mt-[-4rem]"
+        className="w-full max-w-7xl mx-auto px-2 pb-6 mt-[-8rem]"
         initial={{ opacity: 0, y: 2, scale: 0.95 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
       >
+        {/* Gunakan class dari CSS module */}
         <div className={tabsStyles.tabs}>
           {tabs.map((tab) => (
-            <motion.button
+            <Magnet
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              data-active={activeTab === tab.id}
-              className={tabsStyles.tabBtn}
-              variants={{
-                hidden: { opacity: 0, y: 20, scale: 0.8 },
-                show: { opacity: 1, y: 0, scale: 1 },
-              }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              strength={0.5}
+              range={200}
+              duration={0.5}
             >
-              {tab.label}
-            </motion.button>
+              <motion.button
+                onClick={() => setActiveTab(tab.id)}
+                data-active={activeTab === tab.id}
+                className={tabsStyles.tabBtn}
+                variants={{
+                  hidden: { opacity: 0, y: 20, scale: 0.8 },
+                  show: { opacity: 1, y: 0, scale: 1 },
+                }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              >
+                {tab.label}
+              </motion.button>
+            </Magnet>
           ))}
         </div>
 
