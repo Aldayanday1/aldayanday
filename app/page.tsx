@@ -19,7 +19,7 @@ import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/s
 import LiquidEther from '@/components/LiquidEther';
 
 // Tambahkan import yang benar untuk CSS module
-import tabsStyles from "@/components/tabs.module.css";
+import tabsStyles from "@/components/Tabs.module.css";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Project");
