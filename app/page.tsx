@@ -1025,7 +1025,7 @@ export default function Home() {
 
       {/* Navigation Tabs and Content Section */}
       <motion.div
-        className="w-full max-w-7xl mx-auto px-2 pb-6 sm:mt-[-10rem] mt-[-5rem]"
+        className="w-full max-w-7xl mx-auto px-2 pb-6 sm:mt-[-10rem] mt-[-6rem]"
         initial={{ opacity: 0, y: 2, scale: 0.95 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true }}
