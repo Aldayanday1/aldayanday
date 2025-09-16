@@ -20,7 +20,7 @@ export const CardContainer = ({
   containerClassName,
 }: {
   children?: React.ReactNode;
-  className?: string;
+  className?: string | undefined;
   containerClassName?: string;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -80,8 +80,8 @@ export const CardBody = ({
   children,
   className,
 }: {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactNode | React.ReactNode[];
+  className?: string | undefined;
 }) => {
   return (
     <div
@@ -95,8 +95,8 @@ export const CardBody = ({
   );
 };
 
-export const CardItem = ({
-  as: Tag = "div",
+export const CardItem = <T extends keyof React.JSX.IntrinsicElements = "div">({
+  as: Tag = "div" as T,
   children,
   className,
   translateX = 0,
@@ -107,7 +107,7 @@ export const CardItem = ({
   rotateZ = 0,
   ...rest
 }: {
-  as?: React.ElementType;
+  as?: T;
   children: React.ReactNode;
   className?: string;
   translateX?: number | string;
@@ -116,9 +116,8 @@ export const CardItem = ({
   rotateX?: number | string;
   rotateY?: number | string;
   rotateZ?: number | string;
-  [key: string]: any;
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
+} & React.ComponentPropsWithoutRef<T>) => {
+  const ref = useRef<React.ElementRef<T>>(null);
   const [isMouseEntered] = useMouseEnter();
 
   useEffect(() => {
@@ -128,9 +127,9 @@ export const CardItem = ({
   const handleAnimations = () => {
     if (!ref.current) return;
     if (isMouseEntered) {
-      ref.current.style.transform = `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`;
+      (ref.current as unknown as HTMLElement).style.transform = `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`;
     } else {
-      ref.current.style.transform = `translateX(0px) translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)`;
+      (ref.current as unknown as HTMLElement).style.transform = `translateX(0px) translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)`;
     }
   };
 

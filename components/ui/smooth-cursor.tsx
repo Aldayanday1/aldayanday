@@ -218,7 +218,9 @@ export function SmoothCursor({
   }, [cursorX, cursorY, rotation, scale]);
 
   // clone cursor element and inject current theme flag so DefaultCursorSVG can adapt
-  const renderedCursor = isValidElement(cursor) ? cloneElement(cursor as any, { dark: isDark }) : cursor;
+  const renderedCursor = isValidElement(cursor)
+    ? cloneElement(cursor as React.ReactElement<{ dark?: boolean }>, { dark: isDark })
+    : cursor;
 
   return (
     <motion.div

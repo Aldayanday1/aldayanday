@@ -14,7 +14,11 @@ export const AnimatedTooltip = ({
     id: number;
     name: string;
     designation: string;
-    icon: React.ComponentType<any>; // React Icons component
+    // Ganti any dengan type spesifik untuk React Icons
+    icon: React.ComponentType<{
+      className?: string;
+      style?: React.CSSProperties;
+    }>;
     color: string;
   }[];
   isDarkMode?: boolean;
