@@ -6,9 +6,10 @@
     overflow-x: auto;
     /* Tetap untuk scroll horizontal jika perlu */
     -webkit-overflow-scrolling: touch;
-    margin-bottom: 2rem;
+    /* margin-bottom: 0.5rem; */
     /* Tambahkan padding lebih besar untuk memberi ruang gerakan bebas */
-    padding: 2rem 2rem;
+    padding-top: 2.5rem;
+    padding-bottom: 2rem;
     /* Naikkan dari 0 1rem ke 2rem untuk ruang atas/bawah */
     /* Pastikan tidak ada batasan overflow yang membatasi gerakan */
     overflow: visible;
@@ -23,7 +24,7 @@
     /* tetapkan tinggi selalu */
     padding: 0 0.8rem;
     /* horizontal padding tetap */
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 600;
     line-height: 1;
     display: inline-flex;
@@ -71,20 +72,34 @@
 /* Responsive */
 @media (max-width: 640px) {
     .tabs {
-        padding: 1.5rem 1.5rem;
+        padding: 1.5rem;
         /* Sesuaikan padding di mobile */
         overflow: visible;
         /* Tetap visible di mobile */
     }
 
     .tabBtn {
-        font-size: 0.65rem;
-        padding: 0.1rem 0.7rem;
-        height: 26px;
+        font-size: 0.67rem;
+        padding: 0.1rem 0.5rem;
+        display: flex;
+        /* Ensure flex display for vertical centering */
+        align-items: center;
+        /* Center items vertically */
+        justify-content: center;
+        /* Center items horizontally */
     }
 
     .tabBtn[data-active="true"] {
-        padding: 0.12rem 0.8rem;
-        height: 28px;
+        font-size: 0.67rem;
+        padding: 0.1rem 0.5rem;
+        height: 24px;
+        line-height: 24px;
+        /* Match line-height to height for vertical centering */
+        display: flex;
+        /* Ensure flex display for vertical centering */
+        align-items: center;
+        /* Center items vertically */
+        justify-content: center;
+        /* Center items horizontally */
     }
 }

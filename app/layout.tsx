@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="antialiased" suppressHydrationWarning>
+    <html lang="en" className="antialiased dark" suppressHydrationWarning>
       <head>
         <meta name="view-transition" content="same-origin" />
       </head>

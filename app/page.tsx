@@ -11,7 +11,7 @@ import GradualBlur from '@/components/GradualBlur';
 import FullScreenModal from '@/components/FullScreenModal';
 import Credential from '@/components/project';
 import Modal from '@/components/modal';
-import Magnet from '@/components/MagneticGSAP';
+import MagneticGSAP from "@/components/MagneticGSAP";
 import LogoLoop from '@/components/LogoLoop';
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
@@ -25,7 +25,7 @@ import tabsStyles from "@/components/Tabs.module.css";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Project");
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Will be set correctly in useEffect
   const [modal, setModal] = useState({ active: false, index: 0 })
   const [fullScreenModal, setFullScreenModal] = useState({ active: false, index: 0 })
   const [cursorActive, setCursorActive] = useState(false);
@@ -205,9 +205,14 @@ export default function Home() {
       ctaText: "View Demo",
       ctaLink: "https://github.com/your-username/task-app",
       content: () => (
-        <p>
-          Task app built with Next.js and TypeScript. Features real-time collab, drag & drop, team management, and progress tracking.
-        </p>
+        <>
+          <p>
+            Task Management App is a comprehensive solution built with Next.js and TypeScript, designed to streamline team collaboration and productivity. It features real-time updates, allowing users to track tasks instantly across devices, with intuitive drag-and-drop functionality for easy task reorganization.
+          </p>
+          <p>
+            The app includes advanced team management tools, progress tracking with visual dashboards, and integration with popular project management workflows. It supports user authentication, role-based access, and customizable notifications to keep teams aligned and efficient.
+          </p>
+        </>
       ),
     },
     {
@@ -217,9 +222,14 @@ export default function Home() {
       ctaText: "Live Demo",
       ctaLink: "https://github.com/your-username/weather-dashboard",
       content: () => (
-        <p>
-          Responsive weather dashboard with React and APIs. Shows location-based data, 7-day forecasts, maps, and alerts.
-        </p>
+        <>
+          <p>
+            Weather Dashboard is a responsive web application developed with React and integrated APIs, providing accurate and location-based weather data. It displays current conditions, hourly forecasts, and a detailed 7-day outlook, ensuring users stay informed about weather changes.
+          </p>
+          <p>
+            The dashboard includes interactive maps for regional views, severe weather alerts, and customizable settings for preferred units and locations. Built with a focus on user experience, it offers a clean interface with smooth animations and accessibility features for all users.
+          </p>
+        </>
       ),
     },
     {
@@ -229,9 +239,14 @@ export default function Home() {
       ctaText: "See Live",
       ctaLink: "https://github.com/your-username/social-api",
       content: () => (
-        <p>
-          RESTful API for social media using Node.js and Express. Includes auth, posts, messaging, and docs.
-        </p>
+        <>
+          <p>
+            Social Media API is a robust RESTful backend service created using Node.js and Express, tailored for modern social media platforms. It handles user authentication securely, manages posts, comments, and likes, while supporting real-time messaging through WebSocket integration.
+          </p>
+          <p>
+            The API includes comprehensive documentation with Swagger, rate limiting for performance, and data validation to ensure reliability. It supports scalable database operations with MongoDB, making it ideal for high-traffic applications requiring efficient data handling and user privacy controls.
+          </p>
+        </>
       ),
     },
   ];
@@ -239,9 +254,10 @@ export default function Home() {
   // Revisi renderProject agar action button langsung buka detail card
   const renderProject = () => (
     <div className="w-full max-w-2xl mx-auto space-y-15">
+      {cursorActive && <SmoothCursor />}
+
       {projects.map((item, index) => (
         <div key={item.id ?? index} className="relative">
-          {/* Project Card */}
           <CometCard
             rotateDepth={17.5}
             translateDepth={20}
@@ -261,32 +277,29 @@ export default function Home() {
                 border: "1px solid rgba(0,0,0,0.04)"
               }}
             >
-              {/* card content (left/text + right/image) */}
               <div className="flex items-stretch">
                 <div className="flex-1 px-6 py-[6px] flex flex-col justify-between">
                   <div className="mb-2">
-                    <div className="w-10 h-10 rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-base shadow-sm mb-9">
+                    <div className="w-10 h-10 sm:w-[34px] sm:h-[34px] rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] sm:text-[28px] shadow-sm mb-9">
                       {item.logo}
                     </div>
-                    <h3 className="text-lg font-semibold text-[var(--text-primary)] text-left mb-1">
+                    <h3 className="font-semibold text-[20px] sm:text-[20px] text-[var(--text-primary)] text-left mb-1">
                       {item.title}
                     </h3>
                   </div>
 
                   <div className="mb-6">
-                    <p className="text-xs font-semibold text-[var(--text-secondary)] leading-relaxed">
+                    <p className="text-xs sm:text-[13.5px] font-semibold text-[var(--text-secondary)] leading-relaxed">
                       {item.description}
                     </p>
                   </div>
 
-                  {/* action buttons, icon, and logo loop */}
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                      {/* Action Button: langsung buka detail */}
                       <button
                         type="button"
                         aria-label={item.buttonText}
-                        className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-sm font-medium 
+                        className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-[13px] sm:text-[16px] font-medium 
                           bg-[var(--background)] text-[var(--text-primary)] 
                           border border-[var(--text-primary)] shadow-sm 
                           ${isDarkMode
@@ -296,10 +309,10 @@ export default function Home() {
                           transition-colors duration-150 group`}
                         onClick={() => setExpandCardIndex(index)}
                       >
-                        <span className="leading-none text-[11px] font-semibold">{item.buttonText}</span>
+                        <span className="leading-none text-[11px] sm:text-[12px] font-semibold">{item.buttonText}</span>
                         <FontAwesomeIcon
                           icon={faArrowRight}
-                          className={`text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
+                          className={`text-[12px] sm:text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
                             }`}
                         />
                       </button>
@@ -309,7 +322,7 @@ export default function Home() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="GitHub"
-                        className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                        className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
                           ${isDarkMode
                             ? 'hover:bg-white hover:text-black hover:border-black'
                             : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
@@ -317,11 +330,11 @@ export default function Home() {
                           transition-colors duration-150 group`}
                         style={{ fontSize: '1.1rem' }}
                       >
-                        <FontAwesomeIcon icon={faGithub} />
+                        <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
                       </a>
                     </div>
 
-                    <div style={{ height: '22px', width: '135px', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ height: '22px', width: '123px', position: 'relative', overflow: 'hidden' }}>
                       <LogoLoop
                         logos={techLogos}
                         speed={80}
@@ -333,6 +346,7 @@ export default function Home() {
                         fadeOut
                         fadeOutColor="var(--card-background)"
                         ariaLabel="Technology partners"
+                        className="text-[16px] sm:text-[22px]"
                       />
                     </div>
                   </div>
@@ -346,7 +360,7 @@ export default function Home() {
                         style={{
                           position: 'absolute',
                           right: '-2rem',
-                          top: '55%',
+                          top: '60%',
                           width: '55%',
                           maxWidth: '820px',
                           height: '320px',
@@ -380,7 +394,6 @@ export default function Home() {
             </motion.article>
           </CometCard>
 
-          {/* Expandable Card: langsung buka detail sesuai index (dengan animasi masuk/keluar) */}
           <AnimatePresence>
             {expandCardIndex === index && (
               <motion.div
@@ -493,7 +506,8 @@ export default function Home() {
 
   useEffect(() => {
     const checkTheme = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
+      const isDark = document.documentElement.classList.contains('dark');
+      setIsDarkMode(isDark);
     };
 
     checkTheme();
@@ -504,9 +518,18 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  // Detect MagneticGSAP only for Desktop (min-width: 640px)
+  const [isDesktop, setIsDesktop] = useState(true);
+  useEffect(() => {
+    const checkScreen = () => setIsDesktop(window.innerWidth >= 640);
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
+
   return (
     <>
-      {/* Silk background hanya aktif di dark mode dan fullscreen */}
+      {/* Silk background aktif di dark mode dan fullscreen */}
       {isDarkMode && (
         <div style={{ position: 'fixed', inset: 0, zIndex: -1 }}>
           <Silk
@@ -521,19 +544,17 @@ export default function Home() {
 
       {/* Theme toggler */}
       <div className="fixed top-4 right-4 z-50">
-        <AnimatedThemeToggler />
+        <AnimatedThemeToggler onToggle={setIsDarkMode} />
       </div>
 
-      {cursorActive && <SmoothCursor />}
-
       {/* Hero Section */}
-      <div className="flex items-center justify-center w-full px-3 text-center" style={{ minHeight: "65vh" }}>
+      <div className="flex items-center justify-center w-full px-3 text-center sm:mt-0 mt-4" style={{ minHeight: "65vh" }}>
         <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 max-w-2xl">
           {/* Profile Image with Status */}
-          <div className="relative py-4 sm:py-6">
+          <div className="relative py-4 sm:py-6 -mt-16">
             {/* Status Badge with Animation */}
             <motion.div
-              className="absolute -top-10 sm:-top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 text-xs px-2 sm:px-3 py-1 rounded-full border"
+              className="absolute -top-8 sm:-top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-2 px-3 sm:px-3 py-1 rounded-full border"
               style={{
                 backgroundColor: 'var(--status-badge-bg)',
                 borderColor: 'var(--status-badge-border)',
@@ -546,23 +567,23 @@ export default function Home() {
               transition={{ delay: 0.1, duration: 0.5 }}
             >
               <motion.span
-                className="w-2 h-2 rounded-full bg-purple-500"
+                className="w-[7px] h-[7px] sm:w-[10px] sm:h-[10px] rounded-full bg-purple-500"
                 animate={{
                   opacity: [1, 0, 1],
                   boxShadow: [
                     "0 0 0 0 rgba(139, 92, 246, 0.7)",
-                    "0 0 0 10px rgba(139, 92, 246, 0)",
+                    "0 0 0 6px rgba(139, 92, 246, 0)",
                     "0 0 0 0 rgba(139, 92, 246, 0.7)"
                   ]
                 }}
                 transition={{ repeat: Infinity, duration: 1 }}
               />
-              <span className='text-xs'>Active</span>
+              <span className='text-[11px] sm:text-[14px]'>Active</span>
             </motion.div>
 
             {/* Profile Image with Animation */}
             <motion.div
-              className="w-20 h-20 sm:w-27 sm:h-27 rounded-full overflow-hidden bg-transparent shadow-xl"
+              className="w-20 h-20 sm:w-27 sm:h-27 rounded-full overflow-hidden bg-transparent shadow-xl mt-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               whileHover={{ y: -5, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
@@ -585,7 +606,7 @@ export default function Home() {
               by="character"
               delay={0.2}
               once={true}  // Tambahkan ini agar animasi hanya sekali
-              className="text-lg sm:text-xl font-bold text-[var(--text-primary)]"
+              className="text-[16px] sm:text-[20px] md:text-[24px] font-bold text-[var(--text-primary)]"
             >
               Mochamad Aldi Raihan Fachrizal
             </TextAnimate>
@@ -594,7 +615,7 @@ export default function Home() {
               by="character"
               delay={0.3}
               once={true}  // Tambahkan ini
-              className="text-base sm:text-lg font-bold text-[var(--text-secondary)]"
+              className="text-[14px] sm:text-[16px] md:text-[18px] font-bold text-[var(--text-secondary)]"
             >
               Im a Fullstack Developer.
 
@@ -604,18 +625,18 @@ export default function Home() {
               by="character"
               delay={0.4}
               once={true}  // Tambahkan ini
-              className="text-sm text-[var(--text-secondary)]"
+              className="text-[12.5px] sm:text-[14px] md:text-[16px] text-[var(--text-secondary)]"
             >
               I spend most of time thinking about Tea.
             </TextAnimate>
-            <div className="text-xs text-[var(--text-secondary)] flex items-center justify-center gap-1">
+            <div className="text-[11.5px] sm:text-[12px] md:text-[14px] text-[var(--text-secondary)] flex items-center justify-center gap-1">
               <motion.div
                 initial={{ opacity: 0, filter: 'blur(10px)' }}
                 whileInView={{ opacity: 1, filter: 'blur(0px)' }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.45, duration: 0.5 }}
               >
-                <FontAwesomeIcon icon={faLocationDot} className="text-xs" />
+                <FontAwesomeIcon icon={faLocationDot} className="text-[12px] sm:text-[12px] md:text-[14px]" />
               </motion.div>
               <TextAnimate
                 animation="blurIn"
@@ -630,7 +651,7 @@ export default function Home() {
 
           {/* Social Icons with Animation */}
           <motion.div
-            className="flex items-center gap-1 sm:gap-1 mt-4 sm:mt-1.5 text-base text-[var(--icon-color)]"
+            className="flex items-center gap-1 sm:gap-1 mt-4 sm:mt-1.5 text-[16px] sm:text-[16px] md:text-[18px] text-[var(--icon-color)]"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
@@ -668,22 +689,37 @@ export default function Home() {
 
       {/* Navigation Tabs and Content Section */}
       <motion.div
-        className="w-full max-w-7xl mx-auto px-2 pb-6 mt-[-8rem]"
+        className="w-full max-w-7xl mx-auto px-2 pb-6 sm:mt-[-10rem] mt-[-8rem]"
         initial={{ opacity: 0, y: 2, scale: 0.95 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
       >
-        {/* Gunakan class dari CSS module */}
         <div className={tabsStyles.tabs}>
-          {tabs.map((tab) => (
-            <Magnet
-              key={tab.id}
-              strength={0.5}
-              range={200}
-              duration={0.5}
-            >
+          {tabs.map((tab) =>
+            isDesktop ? (
+              <MagneticGSAP
+                key={tab.id}
+                strength={0.5}
+                range={200}
+                duration={0.5}
+              >
+                <motion.button
+                  onClick={() => setActiveTab(tab.id)}
+                  data-active={activeTab === tab.id}
+                  className={tabsStyles.tabBtn}
+                  variants={{
+                    hidden: { opacity: 0, y: 20, scale: 0.8 },
+                    show: { opacity: 1, y: 0, scale: 1 },
+                  }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                >
+                  {tab.label}
+                </motion.button>
+              </MagneticGSAP>
+            ) : (
               <motion.button
+                key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 data-active={activeTab === tab.id}
                 className={tabsStyles.tabBtn}
@@ -695,8 +731,8 @@ export default function Home() {
               >
                 {tab.label}
               </motion.button>
-            </Magnet>
-          ))}
+            )
+          )}
         </div>
 
         {/* Content Section */}

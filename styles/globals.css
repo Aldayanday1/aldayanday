@@ -101,3 +101,19 @@ div[style*="position: fixed"][style*="bottom: 16px"][style*="left: 16px"] {
       0 0 140px rgba(147, 51, 234, 0.3);
   }
 }
+
+/* Saat smooth-cursor aktif, sembunyikan cursor default di dalam project cards */
+body.smooth-cursor-active .project-card,
+body.smooth-cursor-active .project-card * {
+  cursor: none !important;
+}
+
+/* Jika ingin tetap menampilkan pointer untuk elemen tertentu (mis. inputs), override: */
+/* Jika ingin tetap menampilkan pointer untuk elemen tertentu (mis. inputs), override:
+body.smooth-cursor-active .project-card a,
+body.smooth-cursor-active .project-card button,
+body.smooth-cursor-active .project-card input,
+body.smooth-cursor-active .project-card textarea {
+  cursor: pointer !important;
+}
+*/
