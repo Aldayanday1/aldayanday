@@ -277,7 +277,106 @@ export default function Home() {
                 border: "1px solid rgba(0,0,0,0.04)"
               }}
             >
-              <div className="flex items-stretch">
+              {/* Mobile Layout - Stack vertically */}
+              <div className="block sm:hidden">
+                {/* Content Section */}
+                <div className="px-6 py-4">
+                  <div className="mb-4">
+                    <div className="w-10 h-10 rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] shadow-sm mb-4">
+                      {item.logo}
+                    </div>
+                    <h3 className="font-semibold text-[18px] text-[var(--text-primary)] text-left mb-2">
+                      {item.title}
+                    </h3>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="text-[13px] font-semibold text-[var(--text-secondary)] leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  {/* Image Section - Simple layout for mobile */}
+                  {item.image && (
+                    <div className="mb-4">
+                      <div className="w-full rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
+                        <img
+                          src={item.image}
+                          alt={`${item.title} preview`}
+                          className="w-full h-[180px] object-cover"
+                          style={{
+                            objectPosition: index === 0 ? 'left center' :
+                              index === 1 ? 'left center' :
+                                index === 2 ? 'center center' :
+                                  'center center',
+                            filter: 'contrast(1.02) saturate(1.03)'
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons and Tech Stack */}
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        aria-label={item.buttonText}
+                        className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-[12px] font-medium 
+                          bg-[var(--background)] text-[var(--text-primary)] 
+                          border border-[var(--text-primary)] shadow-sm 
+                          ${isDarkMode
+                            ? 'hover:bg-white hover:text-black hover:border-black'
+                            : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                          } 
+                          transition-colors duration-150 group`}
+                        onClick={() => setExpandCardIndex(index)}
+                      >
+                        <span className="leading-none text-[10px] font-semibold">{item.buttonText}</span>
+                        <FontAwesomeIcon
+                          icon={faArrowRight}
+                          className={`text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
+                            }`}
+                        />
+                      </button>
+
+                      <a
+                        href={item.link ?? "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="GitHub"
+                        className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                          ${isDarkMode
+                            ? 'hover:bg-white hover:text-black hover:border-black'
+                            : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                          }
+                          transition-colors duration-150 group`}
+                      >
+                        <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
+                      </a>
+                    </div>
+
+                    <div style={{ height: '22px', width: '155px', position: 'relative', overflow: 'hidden' }}>
+                      <LogoLoop
+                        logos={techLogos}
+                        speed={80}
+                        direction="right"
+                        logoHeight={18}
+                        gap={8}
+                        pauseOnHover
+                        scaleOnHover
+                        fadeOut
+                        fadeOutColor="var(--card-background)"
+                        ariaLabel="Technology partners"
+                        className="text-[14px]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop Layout - Existing layout with side image */}
+              <div className="hidden sm:flex items-stretch">
                 <div className="flex-1 px-6 py-[6px] flex flex-col justify-between">
                   <div className="mb-2">
                     <div className="w-10 h-10 sm:w-[34px] sm:h-[34px] rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] sm:text-[28px] shadow-sm mb-9">
@@ -352,6 +451,7 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Desktop Image - Existing complex positioning */}
                 {item.image && (
                   <div className="w-1/2 flex items-end">
                     <div className="w-full p-4 pt-0 flex justify-end">
