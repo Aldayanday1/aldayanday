@@ -117,3 +117,21 @@ body.smooth-cursor-active .project-card textarea {
   cursor: pointer !important;
 }
 */
+
+/* Mobile viewport fix untuk background */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific */
+  .silk-background {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+}
+
+/* Untuk Android Chrome */
+@media screen and (max-width: 640px) {
+  .silk-background {
+    height: calc(100vh + 100px); /* Extra height untuk cover address bar area */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+}

@@ -865,13 +865,13 @@ export default function Home() {
 
   return (
     <>
-      {/* Silk background aktif di dark mode dan fullscreen */}
+      {/* Silk background dengan class CSS yang stabil */}
       {isDarkMode && (
-        <div style={{
+        <div className="silk-background" style={{
           position: 'fixed',
           inset: 0,
           zIndex: -1,
-          overflow: 'hidden' // Mencegah scroll yang tidak diinginkan
+          overflow: 'hidden'
         }}>
           <Silk
             speed={5}
