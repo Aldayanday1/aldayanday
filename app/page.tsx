@@ -867,7 +867,12 @@ export default function Home() {
     <>
       {/* Silk background aktif di dark mode dan fullscreen */}
       {isDarkMode && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: -1 }}>
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: -1,
+          overflow: 'hidden' // Mencegah scroll yang tidak diinginkan
+        }}>
           <Silk
             speed={5}
             scale={1}
