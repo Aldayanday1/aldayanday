@@ -74,7 +74,7 @@ export default function Home() {
       case "Project": return renderProject();
       case "Credentials": return renderCredentials();
       case "Contact": return renderContact();
-      default: return renderAboutMe();
+      default: return renderAboutMe()
     }
   };
 
