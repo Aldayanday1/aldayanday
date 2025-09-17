@@ -102,7 +102,7 @@ div[style*="position: fixed"][style*="bottom: 16px"][style*="left: 16px"] {
   }
 }
 
-/* Saat smooth-cursor aktif, sembunyikan cursor default di dalam project cards */
+/* Saat smooth-cursor aktif, sembunyikan cursor default di dalam project cards (renderProject)*/
 body.smooth-cursor-active .project-card,
 body.smooth-cursor-active .project-card * {
   cursor: none !important;
@@ -118,8 +118,9 @@ body.smooth-cursor-active .project-card textarea {
 }
 */
 
-/* Mobile viewport fix untuk background */
+/* Mobile viewport fix untuk background (silk) tidak memengaruhi address bar dari mobile */
 @supports (-webkit-touch-callout: none) {
+
   /* iOS Safari specific */
   .silk-background {
     height: 100vh;
@@ -130,7 +131,8 @@ body.smooth-cursor-active .project-card textarea {
 /* Untuk Android Chrome */
 @media screen and (max-width: 640px) {
   .silk-background {
-    height: calc(100vh + 100px); /* Extra height untuk cover address bar area */
+    height: calc(100vh + 140px);
+    /* Extra height untuk cover address bar area */
     min-height: 100vh;
     min-height: -webkit-fill-available;
   }
