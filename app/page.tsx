@@ -131,13 +131,9 @@ export default function Home() {
           <p className="text-[var(--text-secondary)]">Technologies and tools I work with</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {skills.map((skill, index) => (
-            <motion.div
+          {skills.map((skill) => (
+            <div
               key={skill.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.05, duration: 0.3 }}
               className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-lg p-4 hover:shadow-lg transition-all duration-300 group"
             >
               <div className="flex items-center gap-3">
@@ -149,7 +145,7 @@ export default function Home() {
                   <p className="text-xs text-[var(--text-secondary)]">{skill.category}</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -266,11 +262,8 @@ export default function Home() {
               translateDepth={20}
               className="-mb-6"
             >
-              <motion.article
+              <article
                 className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative project-card py-[6px]"
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
                 onMouseEnter={handleCardMouseEnter}
                 onMouseLeave={handleCardMouseLeave}
                 style={{
@@ -494,15 +487,12 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-              </motion.article>
+              </article>
             </CometCard>
           ) : (
             <div className="-mb-10">
-              <motion.article
+              <article
                 className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative project-card py-[6px]"
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
                 onMouseEnter={handleCardMouseEnter}
                 onMouseLeave={handleCardMouseLeave}
                 style={{
@@ -656,10 +646,10 @@ export default function Home() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label="GitHub"
-                          className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                          className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var,--text-primary)] shadow-sm
                             ${isDarkMode
                               ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                              : 'hover:bg-[var(--text-primary)] hover:text-[var,--background)] hover:border-[var,--background)]'
                             }
                             transition-colors duration-150 group`}
                           style={{ fontSize: '1.1rem' }}
@@ -726,7 +716,7 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-              </motion.article>
+              </article>
             </div>
           )}
 
@@ -736,9 +726,9 @@ export default function Home() {
                 key={`expand-modal-${index}`}
                 className="absolute inset-0 z-50"
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 5 }}
+                animate={{ opacity: 0.95 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.25 }}
               >
                 <ExpandableCardDemo
                   card={projectDetails[index]}
@@ -789,7 +779,7 @@ export default function Home() {
     </main>
   );
 
-  // 5. Contact - Horizontal icons with names
+  // 5. Contact - removed framer-motion animations (static anchors)
   const renderContact = () => {
     const contacts = [
       { name: "WhatsApp", icon: "📱", color: "from-green-500 to-green-600", link: "https://wa.me/your-number" },
@@ -808,18 +798,13 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {contacts.map((contact, index) => (
-            <motion.a
+            <a
               key={contact.name}
               href={contact.link}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.3 }}
               className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl p-4 hover:shadow-lg transition-all duration-300 group text-center"
+              aria-label={contact.name}
             >
               <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${contact.color} flex items-center justify-center text-xl mx-auto mb-3 group-hover:scale-110 transition-transform`}>
                 {contact.icon}
@@ -827,16 +812,16 @@ export default function Home() {
               <h3 className="font-semibold text-[var(--text-primary)] text-sm group-hover:text-[var(--text-primary)]">
                 {contact.name}
               </h3>
-            </motion.a>
-          ))
-          }
-        </div >
+            </a>
+          ))}
+
+        </div>
         <div className="text-center mt-8 p-6 bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl">
           <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
             I&apos;m always open to discussing new opportunities, collaborations, or just having a friendly chat about technology and development.
           </p>
         </div>
-      </div >
+      </div>
     );
   };
 
