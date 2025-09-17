@@ -76,6 +76,7 @@
         /* Sesuaikan padding di mobile */
         overflow: visible;
         /* Tetap visible di mobile */
+        padding-bottom: 2.5rem;
     }
 
     .tabBtn {

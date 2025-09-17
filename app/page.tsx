@@ -18,9 +18,6 @@ import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { CometCard } from "@/components/ui/comet-card"; // added import
 import ExpandableCardDemo from "@/components/expandable-card-demo-standard"; // Import komponen expandable card
 import Silk from '@/components/Silk';
-
-
-// Tambahkan import yang benar untuk CSS module
 import tabsStyles from "@/components/Tabs.module.css";
 
 // Define a type for tab IDs to ensure type safety
@@ -86,7 +83,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
         >
           {contentMap[activeTab]}
         </motion.div>
@@ -99,7 +96,7 @@ export default function Home() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
+      transition={{ duration: 0.3, delay: 0.05 }}
     >
       <div className="w-full max-w-2xl mx-auto bg-[var(--card-background)] border border-[var(--card-border)] rounded-2xl p-8 shadow-lg">
         <div className="text-center space-y-4">
@@ -110,7 +107,7 @@ export default function Home() {
             className="text-2xl font-bold text-[var(--text-primary)] mb-4"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
           >
             About Me
           </motion.h2>
@@ -118,7 +115,7 @@ export default function Home() {
             className="space-y-3 text-left"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.15 }}
           >
             <p className="text-[var(--text-primary)] leading-relaxed">
               <strong>Mochamad Aldi Raihan Fachrizal</strong>
@@ -162,14 +159,14 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
       >
         <div className="w-full max-w-2xl mx-auto space-y-4">
           <motion.div
             className="text-center mb-8"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
           >
             <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Tech Stack</h2>
             <p className="text-[var(--text-secondary)]">Technologies and tools I work with</p>
@@ -180,7 +177,7 @@ export default function Home() {
                 key={skill.name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 + 0.3, duration: 0.3 }}
+                transition={{ delay: index * 0.03 + 0.15, duration: 0.2 }}
                 className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-lg p-4 hover:shadow-lg transition-all duration-300 group"
               >
                 <div className="flex items-center gap-3">
@@ -300,7 +297,7 @@ export default function Home() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
+      transition={{ duration: 0.3, delay: 0.05 }}
     >
       <div className="w-full max-w-2xl mx-auto space-y-15">
         {/* Nonaktifkan SmoothCursor di mobile (< 640px) */}
@@ -312,7 +309,7 @@ export default function Home() {
             className="relative"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 + 0.2, duration: 0.3 }}
+            transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
           >
             {/* ...existing code... */}
             <div key={item.id ?? index} className="relative">
@@ -825,7 +822,7 @@ export default function Home() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
+      transition={{ duration: 0.3, delay: 0.05 }}
     >
       <main>
         <div>
@@ -834,7 +831,7 @@ export default function Home() {
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 + 0.2, duration: 0.3 }}
+              transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
             >
               <Credential
                 index={index}
@@ -870,14 +867,14 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
       >
         <div className="w-full max-w-2xl mx-auto space-y-6">
           <motion.div
             className="text-center mb-8"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
           >
             <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Get In Touch</h2>
             <p className="text-[var(--text-secondary)]">Let&apos;s connect and work together</p>
@@ -891,7 +888,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 + 0.3, duration: 0.3 }}
+                transition={{ delay: index * 0.03 + 0.15, duration: 0.2 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl p-4 hover:shadow-lg transition-all duration-300 group text-center"
@@ -909,7 +906,7 @@ export default function Home() {
             className="text-center mt-8 p-6 bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
+            transition={{ delay: 0.4 }}
           >
             <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
               I&apos;m always open to discussing new opportunities, collaborations, or just having a friendly chat about technology and development.
@@ -1157,7 +1154,7 @@ export default function Home() {
         </div>
 
         {/* Content Section */}
-        <div className="px-4 md:px-6 mb-20 max-w-3xl mx-auto">
+        <div className="px-4 sm:px-6 mb-20 max-w-3xl mx-auto">
           {getContentByTab()}
         </div>
       </motion.div>
