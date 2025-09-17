@@ -81,25 +81,30 @@
     .tabBtn {
         font-size: 0.67rem;
         padding: 0.1rem 0.5rem;
+        height: 24px;
+        /* Tetapkan height untuk mobile */
+        line-height: 24px;
+        /* Tetapkan line-height sama dengan height */
         display: flex;
-        /* Ensure flex display for vertical centering */
+        /* Pastikan flex untuk centering */
         align-items: center;
-        /* Center items vertically */
+        /* Center vertikal */
         justify-content: center;
-        /* Center items horizontally */
+        /* Center horizontal */
     }
 
     .tabBtn[data-active="true"] {
         font-size: 0.67rem;
         padding: 0.1rem 0.5rem;
         height: 24px;
+        /* Pastikan height sama */
         line-height: 24px;
-        /* Match line-height to height for vertical centering */
+        /* Pastikan line-height sama */
         display: flex;
-        /* Ensure flex display for vertical centering */
+        /* Pastikan flex untuk centering */
         align-items: center;
-        /* Center items vertically */
+        /* Center vertikal */
         justify-content: center;
-        /* Center items horizontally */
+        /* Center horizontal */
     }
 }
