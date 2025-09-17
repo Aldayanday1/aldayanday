@@ -23,8 +23,11 @@ import Silk from '@/components/Silk';
 // Tambahkan import yang benar untuk CSS module
 import tabsStyles from "@/components/Tabs.module.css";
 
+// Define a type for tab IDs to ensure type safety
+type TabId = "About" | "Stack" | "Project" | "Credentials" | "Contact";
+
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("Project");
+  const [activeTab, setActiveTab] = useState<TabId>("Project");
   const [isDarkMode, setIsDarkMode] = useState(false); // Will be set correctly in useEffect
   const [modal, setModal] = useState({ active: false, index: 0 })
   const [fullScreenModal, setFullScreenModal] = useState({ active: false, index: 0 })
@@ -59,7 +62,7 @@ export default function Home() {
     }, 250); // 250ms debounce — adjust as needed (200-400ms recommended)
   };
 
-  const tabs = [
+  const tabs: { id: TabId; label: string }[] = [
     { id: "About", label: "About" },
     { id: "Stack", label: "Stack" },
     { id: "Project", label: "Project" },
@@ -68,43 +71,74 @@ export default function Home() {
   ];
 
   const getContentByTab = () => {
-    switch (activeTab) {
-      case "About": return renderAboutMe();
-      case "Stack": return renderStack();
-      case "Project": return renderProject();
-      case "Credentials": return renderCredentials();
-      case "Contact": return renderContact();
-      default: return renderAboutMe()
-    }
+    const contentMap = {
+      About: renderAboutMe(),
+      Stack: renderStack(),
+      Project: renderProject(),
+      Credentials: renderCredentials(),
+      Contact: renderContact()
+    };
+
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
+          {contentMap[activeTab]}
+        </motion.div>
+      </AnimatePresence>
+    );
   };
 
   // 1. About Me - Simple text information
   const renderAboutMe = () => (
-    <div className="w-full max-w-2xl mx-auto bg-[var(--card-background)] border border-[var(--card-border)] rounded-2xl p-8 shadow-lg">
-      <div className="text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-2xl mx-auto mb-6">
-          👨‍💻
-        </div>
-        <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">About Me</h2>
-        <div className="space-y-3 text-left">
-          <p className="text-[var(--text-primary)] leading-relaxed">
-            <strong>Mochamad Aldi Raihan Fachrizal</strong>
-          </p>
-          <p className="text-[var(--text-secondary)] leading-relaxed">
-            Fresh Graduate dari Program Studi Teknik Informatika, Universitas Muhammadiyah Yogyakarta Angkatan 2021 dengan IPK 3.6.
-          </p>
-          <p className="text-[var(--text-secondary)] leading-relaxed">
-            Spesialis dalam pengembangan aplikasi <strong>Fullstack Development</strong> dengan pengalaman dalam membangun aplikasi web modern menggunakan teknologi terkini.
-          </p>
-          <p className="text-[var(--text-secondary)] leading-relaxed">
-            Passionate dalam menciptakan solusi digital yang inovatif dan user-friendly. Selalu antusias untuk belajar teknologi baru dan menghadapi tantangan dalam dunia programming.
-          </p>
-          <p className="text-[var(--text-secondary)] leading-relaxed">
-            Memiliki kemampuan bekerja dalam tim, komunikasi yang baik, dan mindset problem-solving yang kuat.
-          </p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+    >
+      <div className="w-full max-w-2xl mx-auto bg-[var(--card-background)] border border-[var(--card-border)] rounded-2xl p-8 shadow-lg">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-2xl mx-auto mb-6">
+            👨‍💻
+          </div>
+          <motion.h2
+            className="text-2xl font-bold text-[var(--text-primary)] mb-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            About Me
+          </motion.h2>
+          <motion.div
+            className="space-y-3 text-left"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <p className="text-[var(--text-primary)] leading-relaxed">
+              <strong>Mochamad Aldi Raihan Fachrizal</strong>
+            </p>
+            <p className="text-[var(--text-secondary)] leading-relaxed">
+              Fresh Graduate dari Program Studi Teknik Informatika, Universitas Muhammadiyah Yogyakarta Angkatan 2021 dengan IPK 3.6.
+            </p>
+            <p className="text-[var(--text-secondary)] leading-relaxed">
+              Spesialis dalam pengembangan aplikasi <strong>Fullstack Development</strong> dengan pengalaman dalam membangun aplikasi web modern menggunakan teknologi terkini.
+            </p>
+            <p className="text-[var(--text-secondary)] leading-relaxed">
+              Passionate dalam menciptakan solusi digital yang inovatif dan user-friendly. Selalu antusias untuk belajar teknologi baru dan menghadapi tantangan dalam dunia programming.
+            </p>
+            <p className="text-[var(--text-secondary)] leading-relaxed">
+              Memiliki kemampuan bekerja dalam tim, komunikasi yang baik, dan mindset problem-solving yang kuat.
+            </p>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   // 2. Stack - Minimalist skill boxes
@@ -125,30 +159,44 @@ export default function Home() {
     ];
 
     return (
-      <div className="w-full max-w-2xl mx-auto space-y-4">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Tech Stack</h2>
-          <p className="text-[var(--text-secondary)]">Technologies and tools I work with</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {skills.map((skill) => (
-            <div
-              key={skill.name}
-              className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-lg p-4 hover:shadow-lg transition-all duration-300 group"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${skill.color}`}></div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-[var(--text-primary)] group-hover:text-[var(--text-primary)]">
-                    {skill.name}
-                  </h3>
-                  <p className="text-xs text-[var(--text-secondary)]">{skill.category}</p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <div className="w-full max-w-2xl mx-auto space-y-4">
+          <motion.div
+            className="text-center mb-8"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Tech Stack</h2>
+            <p className="text-[var(--text-secondary)]">Technologies and tools I work with</p>
+          </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {skills.map((skill, index) => (
+              <motion.div
+                key={skill.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 + 0.3, duration: 0.3 }}
+                className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-lg p-4 hover:shadow-lg transition-all duration-300 group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${skill.color}`}></div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-[var(--text-primary)] group-hover:text-[var(--text-primary)]">
+                      {skill.name}
+                    </h3>
+                    <p className="text-xs text-[var(--text-secondary)]">{skill.category}</p>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
+      </motion.div>
     );
   };
 
@@ -247,505 +295,521 @@ export default function Home() {
     },
   ];
 
-  // Revisi renderProject agar action button langsung buka detail card
+  // 3. Project - Keep existing design
   const renderProject = () => (
-    <div className="w-full max-w-2xl mx-auto space-y-15">
-      {/* Nonaktifkan SmoothCursor di mobile (< 640px) */}
-      {cursorActive && isDesktop && <SmoothCursor />}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+    >
+      <div className="w-full max-w-2xl mx-auto space-y-15">
+        {/* Nonaktifkan SmoothCursor di mobile (< 640px) */}
+        {cursorActive && isDesktop && <SmoothCursor />}
 
-      {projects.map((item, index) => (
-        <div key={item.id ?? index} className="relative">
-          {/* Nonaktifkan CometCard di mobile (< 640px) */}
-          {isDesktop ? (
-            <CometCard
-              rotateDepth={17.5}
-              translateDepth={20}
-              className="-mb-6"
-            >
-              <article
-                className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative project-card py-[6px]"
-                onMouseEnter={handleCardMouseEnter}
-                onMouseLeave={handleCardMouseLeave}
-                style={{
-                  boxShadow: isDarkMode
-                    ? "0 8px 24px rgba(2,6,23,0.12)"
-                    : "0 6px 18px rgba(15,23,42,0.04)",
-                  border: "1px solid rgba(0,0,0,0.04)"
-                }}
-              >
-                {/* Mobile Layout - Stack vertically */}
-                <div className="block sm:hidden">
-                  {/* Content Section */}
-                  <div className="px-6 py-4">
-                    <div className="mb-4">
-                      <div className="w-10 h-10 rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] shadow-sm mb-4">
-                        {item.logo}
-                      </div>
-                      <h3 className="font-semibold text-[18px] text-[var(--text-primary)] text-left mb-2">
-                        {item.title}
-                      </h3>
-                    </div>
-
-                    <div className="mb-4">
-                      <p className="text-[13px] font-semibold text-[var(--text-secondary)] leading-relaxed">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    {/* Image Section - Simple layout for mobile */}
-                    {item.image && (
-                      <div className="mb-4">
-                        <div className="w-full rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
-                          <img
-                            src={item.image}
-                            alt={`${item.title} preview`}
-                            className="w-full h-[180px] object-cover"
-                            style={{
-                              objectPosition: index === 0 ? 'left center' :
-                                index === 1 ? 'left center' :
-                                  index === 2 ? 'center center' :
-                                    'center center',
-                              filter: 'contrast(1.02) saturate(1.03)'
-                            }}
-                          />
+        {projects.map((item, index) => (
+          <motion.div
+            key={item.id ?? index}
+            className="relative"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 + 0.2, duration: 0.3 }}
+          >
+            {/* ...existing code... */}
+            <div key={item.id ?? index} className="relative">
+              {/* Nonaktifkan CometCard di mobile (< 640px) */}
+              {isDesktop ? (
+                <CometCard
+                  rotateDepth={17.5}
+                  translateDepth={20}
+                  className="-mb-6"
+                >
+                  <article
+                    className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative project-card py-[6px]"
+                    onMouseEnter={handleCardMouseEnter}
+                    onMouseLeave={handleCardMouseLeave}
+                    style={{
+                      boxShadow: isDarkMode
+                        ? "0 8px 24px rgba(2,6,23,0.12)"
+                        : "0 6px 18px rgba(15,23,42,0.04)",
+                      border: "1px solid rgba(0,0,0,0.04)"
+                    }}
+                  >
+                    {/* Mobile Layout - Stack vertically */}
+                    <div className="block sm:hidden">
+                      {/* Content Section */}
+                      <div className="px-6 py-4">
+                        <div className="mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] shadow-sm mb-4">
+                            {item.logo}
+                          </div>
+                          <h3 className="font-semibold text-[18px] text-[var(--text-primary)] text-left mb-2">
+                            {item.title}
+                          </h3>
                         </div>
-                      </div>
-                    )}
 
-                    {/* Action Buttons and Tech Stack */}
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          aria-label={item.buttonText}
-                          className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-[12px] font-medium 
+                        <div className="mb-4">
+                          <p className="text-[13px] font-semibold text-[var(--text-secondary)] leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        {/* Image Section - Simple layout for mobile */}
+                        {item.image && (
+                          <div className="mb-4">
+                            <div className="w-full rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
+                              <img
+                                src={item.image}
+                                alt={`${item.title} preview`}
+                                className="w-full h-[180px] object-cover"
+                                style={{
+                                  objectPosition: index === 0 ? 'left center' :
+                                    index === 1 ? 'left center' :
+                                      index === 2 ? 'center center' :
+                                        'center center',
+                                  filter: 'contrast(1.02) saturate(1.03)'
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Action Buttons and Tech Stack */}
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              aria-label={item.buttonText}
+                              className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-[12px] font-medium 
                             bg-[var(--background)] text-[var(--text-primary)] 
                             border border-[var(--text-primary)] shadow-sm 
                             ${isDarkMode
-                              ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                            } 
+                                  ? 'hover:bg-white hover:text-black hover:border-black'
+                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                } 
                             transition-colors duration-150 group`}
-                          onClick={() => setExpandCardIndex(index)}
-                        >
-                          <span className="leading-none text-[10px] font-semibold">{item.buttonText}</span>
-                          <FontAwesomeIcon
-                            icon={faArrowRight}
-                            className={`text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
-                              }`}
-                          />
-                        </button>
+                              onClick={() => setExpandCardIndex(index)}
+                            >
+                              <span className="leading-none text-[10px] font-semibold">{item.buttonText}</span>
+                              <FontAwesomeIcon
+                                icon={faArrowRight}
+                                className={`text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
+                                  }`}
+                              />
+                            </button>
 
-                        <a
-                          href={item.link ?? "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="GitHub"
-                          className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                            <a
+                              href={item.link ?? "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="GitHub"
+                              className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
                             ${isDarkMode
-                              ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                            }
+                                  ? 'hover:bg-white hover:text-black hover:border-black'
+                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                }
                             transition-colors duration-150 group`}
-                        >
-                          <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
-                        </a>
-                      </div>
+                            >
+                              <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
+                            </a>
+                          </div>
 
-                      <div style={{ height: '22px', width: '155px', position: 'relative', overflow: 'hidden' }}>
-                        <LogoLoop
-                          logos={techLogos}
-                          speed={80}
-                          direction="right"
-                          logoHeight={18}
-                          gap={8}
-                          pauseOnHover
-                          scaleOnHover
-                          fadeOut
-                          fadeOutColor="var(--card-background)"
-                          ariaLabel="Technology partners"
-                          className="text-[14px]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Desktop Layout - Existing layout with side image */}
-                <div className="hidden sm:flex items-stretch">
-                  <div className="flex-1 px-6 py-[6px] flex flex-col justify-between">
-                    <div className="mb-2">
-                      <div className="w-10 h-10 sm:w-[34px] sm:h-[34px] rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] sm:text-[28px] shadow-sm mb-9">
-                        {item.logo}
-                      </div>
-                      <h3 className="font-semibold text-[20px] sm:text-[20px] text-[var(--text-primary)] text-left mb-1">
-                        {item.title}
-                      </h3>
-                    </div>
-
-                    <div className="mb-6">
-                      <p className="text-xs sm:text-[13.5px] font-semibold text-[var(--text-secondary)] leading-relaxed">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          aria-label={item.buttonText}
-                          className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-[13px] sm:text-[16px] font-medium 
-                            bg-[var(--background)] text-[var(--text-primary)] 
-                            border border-[var(--text-primary)] shadow-sm 
-                            ${isDarkMode
-                              ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                            } 
-                            transition-colors duration-150 group`}
-                          onClick={() => setExpandCardIndex(index)}
-                        >
-                          <span className="leading-none text-[11px] sm:text-[12px] font-semibold">{item.buttonText}</span>
-                          <FontAwesomeIcon
-                            icon={faArrowRight}
-                            className={`text-[12px] sm:text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
-                              }`}
-                          />
-                        </button>
-
-                        <a
-                          href={item.link ?? "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="GitHub"
-                          className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
-                            ${isDarkMode
-                              ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                            }
-                            transition-colors duration-150 group`}
-                          style={{ fontSize: '1.1rem' }}
-                        >
-                          <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
-                        </a>
-                      </div>
-
-                      <div style={{ height: '22px', width: '123px', position: 'relative', overflow: 'hidden' }}>
-                        <LogoLoop
-                          logos={techLogos}
-                          speed={80}
-                          direction="right"
-                          logoHeight={20}
-                          gap={10}
-                          pauseOnHover
-                          scaleOnHover
-                          fadeOut
-                          fadeOutColor="var(--card-background)"
-                          ariaLabel="Technology partners"
-                          className="text-[16px] sm:text-[22px]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Desktop Image - Existing complex positioning */}
-                  {item.image && (
-                    <div className="w-1/2 flex items-end">
-                      <div className="w-full p-4 pt-0 flex justify-end">
-                        <div
-                          className="rounded-[10px] overflow-hidden bg-gray-50 dark:bg-gray-800"
-                          style={{
-                            position: 'absolute',
-                            right: '-2rem',
-                            top: '60%',
-                            width: '55%',
-                            maxWidth: '820px',
-                            height: '320px',
-                            transform: 'translateY(-40%) translateX(-2%)',
-                            transition: 'transform 280ms ease, box-shadow 220ms ease',
-                            boxShadow: isDarkMode
-                              ? '0 28px 60px rgba(2,6,23,0.55), 0 10px 30px rgba(0,0,0,0.25)'
-                              : '0 20px 40px rgba(2,6,23,0.08), 0 6px 18px rgba(2,6,23,0.06)'
-                          }}
-                        >
-                          <img
-                            src={item.image}
-                            alt={`${item.title} preview`}
-                            className="block"
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover',
-                              objectPosition: index === 0 ? 'left center' :
-                                index === 1 ? 'left center' :
-                                  index === 2 ? 'center center' :
-                                    'center center',
-                              filter: 'contrast(1.02) saturate(1.03)'
-                            }}
-                          />
+                          <div style={{ height: '22px', width: '155px', position: 'relative', overflow: 'hidden' }}>
+                            <LogoLoop
+                              logos={techLogos}
+                              speed={80}
+                              direction="right"
+                              logoHeight={18}
+                              gap={8}
+                              pauseOnHover
+                              scaleOnHover
+                              fadeOut
+                              fadeOutColor="var(--card-background)"
+                              ariaLabel="Technology partners"
+                              className="text-[14px]"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
-              </article>
-            </CometCard>
-          ) : (
-            <div className="-mb-10">
-              <article
-                className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative project-card py-[6px]"
-                onMouseEnter={handleCardMouseEnter}
-                onMouseLeave={handleCardMouseLeave}
-                style={{
-                  boxShadow: isDarkMode
-                    ? "0 8px 24px rgba(2,6,23,0.12)"
-                    : "0 6px 18px rgba(15,23,42,0.04)",
-                  border: "1px solid rgba(0,0,0,0.04)"
-                }}
-              >
-                {/* Mobile Layout - Stack vertically */}
-                <div className="block sm:hidden">
-                  {/* Content Section */}
-                  <div className="px-6 py-4">
-                    <div className="mb-4">
-                      <div className="w-10 h-10 rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] shadow-sm mb-4">
-                        {item.logo}
-                      </div>
-                      <h3 className="font-semibold text-[18px] text-[var(--text-primary)] text-left mb-2">
-                        {item.title}
-                      </h3>
-                    </div>
 
-                    <div className="mb-4">
-                      <p className="text-[13px] font-semibold text-[var(--text-secondary)] leading-relaxed">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    {/* Image Section - Simple layout for mobile */}
-                    {item.image && (
-                      <div className="mb-4">
-                        <div className="w-full rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
-                          <img
-                            src={item.image}
-                            alt={`${item.title} preview`}
-                            className="w-full h-[180px] object-cover"
-                            style={{
-                              objectPosition: index === 0 ? 'left center' :
-                                index === 1 ? 'left center' :
-                                  index === 2 ? 'center center' :
-                                    'center center',
-                              filter: 'contrast(1.02) saturate(1.03)'
-                            }}
-                          />
+                    {/* Desktop Layout - Existing layout with side image */}
+                    <div className="hidden sm:flex items-stretch">
+                      <div className="flex-1 px-6 py-[6px] flex flex-col justify-between">
+                        <div className="mb-2">
+                          <div className="w-10 h-10 sm:w-[34px] sm:h-[34px] rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] sm:text-[28px] shadow-sm mb-9">
+                            {item.logo}
+                          </div>
+                          <h3 className="font-semibold text-[20px] sm:text-[20px] text-[var(--text-primary)] text-left mb-1">
+                            {item.title}
+                          </h3>
                         </div>
-                      </div>
-                    )}
 
-                    {/* Action Buttons and Tech Stack */}
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          aria-label={item.buttonText}
-                          className={`inline-flex items-center gap-1 px-2 py-2 rounded-full
+                        <div className="mb-6">
+                          <p className="text-xs sm:text-[13.5px] font-semibold text-[var(--text-secondary)] leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              aria-label={item.buttonText}
+                              className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-[13px] sm:text-[16px] font-medium 
                             bg-[var(--background)] text-[var(--text-primary)] 
                             border border-[var(--text-primary)] shadow-sm 
                             ${isDarkMode
-                              ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                            } 
+                                  ? 'hover:bg-white hover:text-black hover:border-black'
+                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                } 
                             transition-colors duration-150 group`}
-                          onClick={() => setExpandCardIndex(index)}
-                        >
-                          <span className="leading-none text-[10px] font-semibold">{item.buttonText}</span>
-                          <FontAwesomeIcon
-                            icon={faArrowRight}
-                            className={`text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
-                              }`}
-                          />
-                        </button>
+                              onClick={() => setExpandCardIndex(index)}
+                            >
+                              <span className="leading-none text-[11px] sm:text-[12px] font-semibold">{item.buttonText}</span>
+                              <FontAwesomeIcon
+                                icon={faArrowRight}
+                                className={`text-[12px] sm:text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
+                                  }`}
+                              />
+                            </button>
 
-                        <a
-                          href={item.link ?? "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="GitHub"
-                          className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                            <a
+                              href={item.link ?? "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="GitHub"
+                              className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
                             ${isDarkMode
-                              ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                            }
+                                  ? 'hover:bg-white hover:text-black hover:border-black'
+                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                }
                             transition-colors duration-150 group`}
-                        >
-                          <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
-                        </a>
+                              style={{ fontSize: '1.1rem' }}
+                            >
+                              <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
+                            </a>
+                          </div>
+
+                          <div style={{ height: '22px', width: '123px', position: 'relative', overflow: 'hidden' }}>
+                            <LogoLoop
+                              logos={techLogos}
+                              speed={80}
+                              direction="right"
+                              logoHeight={20}
+                              gap={10}
+                              pauseOnHover
+                              scaleOnHover
+                              fadeOut
+                              fadeOutColor="var(--card-background)"
+                              ariaLabel="Technology partners"
+                              className="text-[16px] sm:text-[22px]"
+                            />
+                          </div>
+                        </div>
                       </div>
 
-                      <div style={{ height: '22px', width: '125px', position: 'relative', overflow: 'hidden' }}>
-                        <LogoLoop
-                          logos={techLogos}
-                          speed={80}
-                          direction="right"
-                          logoHeight={18}
-                          gap={8}
-                          pauseOnHover
-                          scaleOnHover
-                          fadeOut
-                          fadeOutColor="var(--card-background)"
-                          ariaLabel="Technology partners"
-                          className="text-[14px]"
-                        />
-                      </div>
+                      {/* Desktop Image - Existing complex positioning */}
+                      {item.image && (
+                        <div className="w-1/2 flex items-end">
+                          <div className="w-full p-4 pt-0 flex justify-end">
+                            <div
+                              className="rounded-[10px] overflow-hidden bg-gray-50 dark:bg-gray-800"
+                              style={{
+                                position: 'absolute',
+                                right: '-2rem',
+                                top: '60%',
+                                width: '55%',
+                                maxWidth: '820px',
+                                height: '320px',
+                                transform: 'translateY(-40%) translateX(-2%)',
+                                transition: 'transform 280ms ease, box-shadow 220ms ease',
+                                boxShadow: isDarkMode
+                                  ? '0 28px 60px rgba(2,6,23,0.55), 0 10px 30px rgba(0,0,0,0.25)'
+                                  : '0 20px 40px rgba(2,6,23,0.08), 0 6px 18px rgba(2,6,23,0.06)'
+                              }}
+                            >
+                              <img
+                                src={item.image}
+                                alt={`${item.title} preview`}
+                                className="block"
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                  objectPosition: index === 0 ? 'left center' :
+                                    index === 1 ? 'left center' :
+                                      index === 2 ? 'center center' :
+                                        'center center',
+                                  filter: 'contrast(1.02) saturate(1.03)'
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </div>
+                  </article>
+                </CometCard>
+              ) : (
+                <div className="-mb-10">
+                  <article
+                    className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative project-card py-[6px]"
+                    onMouseEnter={handleCardMouseEnter}
+                    onMouseLeave={handleCardMouseLeave}
+                    style={{
+                      boxShadow: isDarkMode
+                        ? "0 8px 24px rgba(2,6,23,0.12)"
+                        : "0 6px 18px rgba(15,23,42,0.04)",
+                      border: "1px solid rgba(0,0,0,0.04)"
+                    }}
+                  >
+                    {/* Mobile Layout - Stack vertically */}
+                    <div className="block sm:hidden">
+                      {/* Content Section */}
+                      <div className="px-6 py-4">
+                        <div className="mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] shadow-sm mb-4">
+                            {item.logo}
+                          </div>
+                          <h3 className="font-semibold text-[18px] text-[var(--text-primary)] text-left mb-2">
+                            {item.title}
+                          </h3>
+                        </div>
 
-                {/* Desktop Layout - Existing layout with side image */}
-                <div className="hidden sm:flex items-stretch">
-                  <div className="flex-1 px-6 py-[6px] flex flex-col justify-between">
-                    <div className="mb-2">
-                      <div className="w-10 h-10 sm:w-[34px] sm:h-[34px] rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] sm:text-[28px] shadow-sm mb-9">
-                        {item.logo}
-                      </div>
-                      <h3 className="font-semibold text-[20px] sm:text-[20px] text-[var(--text-primary)] text-left mb-1">
-                        {item.title}
-                      </h3>
-                    </div>
+                        <div className="mb-4">
+                          <p className="text-[13px] font-semibold text-[var(--text-secondary)] leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
 
-                    <div className="mb-6">
-                      <p className="text-xs sm:text-[13.5px] font-semibold text-[var(--text-secondary)] leading-relaxed">
-                        {item.description}
-                      </p>
-                    </div>
+                        {/* Image Section - Simple layout for mobile */}
+                        {item.image && (
+                          <div className="mb-4">
+                            <div className="w-full rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
+                              <img
+                                src={item.image}
+                                alt={`${item.title} preview`}
+                                className="w-full h-[180px] object-cover"
+                                style={{
+                                  objectPosition: index === 0 ? 'left center' :
+                                    index === 1 ? 'left center' :
+                                      index === 2 ? 'center center' :
+                                        'center center',
+                                  filter: 'contrast(1.02) saturate(1.03)'
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
 
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          aria-label={item.buttonText}
-                          className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-[13px] sm:text-[16px] font-medium 
+                        {/* Action Buttons and Tech Stack */}
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              aria-label={item.buttonText}
+                              className={`inline-flex items-center gap-1 px-2 py-2 rounded-full
                             bg-[var(--background)] text-[var(--text-primary)] 
                             border border-[var(--text-primary)] shadow-sm 
                             ${isDarkMode
-                              ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                            } 
+                                  ? 'hover:bg-white hover:text-black hover:border-black'
+                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                } 
                             transition-colors duration-150 group`}
-                          onClick={() => setExpandCardIndex(index)}
-                        >
-                          <span className="leading-none text-[11px] sm:text-[12px] font-semibold">{item.buttonText}</span>
-                          <FontAwesomeIcon
-                            icon={faArrowRight}
-                            className={`text-[12px] sm:text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
-                              }`}
-                          />
-                        </button>
+                              onClick={() => setExpandCardIndex(index)}
+                            >
+                              <span className="leading-none text-[10px] font-semibold">{item.buttonText}</span>
+                              <FontAwesomeIcon
+                                icon={faArrowRight}
+                                className={`text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
+                                  }`}
+                              />
+                            </button>
 
-                        <a
-                          href={item.link ?? "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="GitHub"
-                          className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var,--text-primary)] shadow-sm
+                            <a
+                              href={item.link ?? "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="GitHub"
+                              className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
                             ${isDarkMode
-                              ? 'hover:bg-white hover:text-black hover:border-black'
-                              : 'hover:bg-[var(--text-primary)] hover:text-[var,--background)] hover:border-[var,--background)]'
-                            }
+                                  ? 'hover:bg-white hover:text-black hover:border-black'
+                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                }
                             transition-colors duration-150 group`}
-                          style={{ fontSize: '1.1rem' }}
-                        >
-                          <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
-                        </a>
-                      </div>
+                            >
+                              <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
+                            </a>
+                          </div>
 
-                      <div style={{ height: '22px', width: '123px', position: 'relative', overflow: 'hidden' }}>
-                        <LogoLoop
-                          logos={techLogos}
-                          speed={80}
-                          direction="right"
-                          logoHeight={20}
-                          gap={10}
-                          pauseOnHover
-                          scaleOnHover
-                          fadeOut
-                          fadeOutColor="var(--card-background)"
-                          ariaLabel="Technology partners"
-                          className="text-[16px] sm:text-[22px]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Desktop Image - Existing complex positioning */}
-                  {item.image && (
-                    <div className="w-1/2 flex items-end">
-                      <div className="w-full p-4 pt-0 flex justify-end">
-                        <div
-                          className="rounded-[10px] overflow-hidden bg-gray-50 dark:bg-gray-800"
-                          style={{
-                            position: 'absolute',
-                            right: '-2rem',
-                            top: '60%',
-                            width: '55%',
-                            maxWidth: '820px',
-                            height: '320px',
-                            transform: 'translateY(-40%) translateX(-2%)',
-                            transition: 'transform 280ms ease, box-shadow 220ms ease',
-                            boxShadow: isDarkMode
-                              ? '0 28px 60px rgba(2,6,23,0.55), 0 10px 30px rgba(0,0,0,0.25)'
-                              : '0 20px 40px rgba(2,6,23,0.08), 0 6px 18px rgba(2,6,23,0.06)'
-                          }}
-                        >
-                          <img
-                            src={item.image}
-                            alt={`${item.title} preview`}
-                            className="block"
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover',
-                              objectPosition: index === 0 ? 'left center' :
-                                index === 1 ? 'left center' :
-                                  index === 2 ? 'center center' :
-                                    'center center',
-                              filter: 'contrast(1.02) saturate(1.03)'
-                            }}
-                          />
+                          <div style={{ height: '22px', width: '125px', position: 'relative', overflow: 'hidden' }}>
+                            <LogoLoop
+                              logos={techLogos}
+                              speed={80}
+                              direction="right"
+                              logoHeight={18}
+                              gap={8}
+                              pauseOnHover
+                              scaleOnHover
+                              fadeOut
+                              fadeOutColor="var(--card-background)"
+                              ariaLabel="Technology partners"
+                              className="text-[14px]"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  )}
+
+                    {/* Desktop Layout - Existing layout with side image */}
+                    <div className="hidden sm:flex items-stretch">
+                      <div className="flex-1 px-6 py-[6px] flex flex-col justify-between">
+                        <div className="mb-2">
+                          <div className="w-10 h-10 sm:w-[34px] sm:h-[34px] rounded-lg bg-[var(--icon-background)] flex items-center justify-center text-[22px] sm:text-[28px] shadow-sm mb-9">
+                            {item.logo}
+                          </div>
+                          <h3 className="font-semibold text-[20px] sm:text-[20px] text-[var(--text-primary)] text-left mb-1">
+                            {item.title}
+                          </h3>
+                        </div>
+
+                        <div className="mb-6">
+                          <p className="text-xs sm:text-[13.5px] font-semibold text-[var(--text-secondary)] leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              aria-label={item.buttonText}
+                              className={`inline-flex items-center gap-1 px-2 py-2 rounded-full text-[13px] sm:text-[16px] font-medium 
+                            bg-[var(--background)] text-[var(--text-primary)] 
+                            border border-[var(--text-primary)] shadow-sm 
+                            ${isDarkMode
+                                  ? 'hover:bg-white hover:text-black hover:border-black'
+                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                } 
+                            transition-colors duration-150 group`}
+                              onClick={() => setExpandCardIndex(index)}
+                            >
+                              <span className="leading-none text-[11px] sm:text-[12px] font-semibold">{item.buttonText}</span>
+                              <FontAwesomeIcon
+                                icon={faArrowRight}
+                                className={`text-[12px] sm:text-[10px] leading-none transition-transform duration-150 group-hover:translate-x-1 ${isDarkMode ? 'text-gray-400 group-hover:text-black' : 'text-gray-400'
+                                  }`}
+                              />
+                            </button>
+
+                            <a
+                              href={item.link ?? "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="GitHub"
+                              className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var,--text-primary)] shadow-sm
+                            ${isDarkMode
+                                  ? 'hover:bg-white hover:text-black hover:border-black'
+                                  : 'hover:bg-[var(--text-primary)] hover:text-[var,--background)] hover:border-[var,--background)]'
+                                }
+                            transition-colors duration-150 group`}
+                              style={{ fontSize: '1.1rem' }}
+                            >
+                              <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
+                            </a>
+                          </div>
+
+                          <div style={{ height: '22px', width: '123px', position: 'relative', overflow: 'hidden' }}>
+                            <LogoLoop
+                              logos={techLogos}
+                              speed={80}
+                              direction="right"
+                              logoHeight={20}
+                              gap={10}
+                              pauseOnHover
+                              scaleOnHover
+                              fadeOut
+                              fadeOutColor="var(--card-background)"
+                              ariaLabel="Technology partners"
+                              className="text-[16px] sm:text-[22px]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Desktop Image - Existing complex positioning */}
+                      {item.image && (
+                        <div className="w-1/2 flex items-end">
+                          <div className="w-full p-4 pt-0 flex justify-end">
+                            <div
+                              className="rounded-[10px] overflow-hidden bg-gray-50 dark:bg-gray-800"
+                              style={{
+                                position: 'absolute',
+                                right: '-2rem',
+                                top: '60%',
+                                width: '55%',
+                                maxWidth: '820px',
+                                height: '320px',
+                                transform: 'translateY(-40%) translateX(-2%)',
+                                transition: 'transform 280ms ease, box-shadow 220ms ease',
+                                boxShadow: isDarkMode
+                                  ? '0 28px 60px rgba(2,6,23,0.55), 0 10px 30px rgba(0,0,0,0.25)'
+                                  : '0 20px 40px rgba(2,6,23,0.08), 0 6px 18px rgba(2,6,23,0.06)'
+                              }}
+                            >
+                              <img
+                                src={item.image}
+                                alt={`${item.title} preview`}
+                                className="block"
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                  objectPosition: index === 0 ? 'left center' :
+                                    index === 1 ? 'left center' :
+                                      index === 2 ? 'center center' :
+                                        'center center',
+                                  filter: 'contrast(1.02) saturate(1.03)'
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </article>
                 </div>
-              </article>
+              )}
+
+              <AnimatePresence>
+                {expandCardIndex === index && (
+                  <motion.div
+                    key={`expand-modal-${index}`}
+                    className="absolute inset-0 z-50"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.95 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <ExpandableCardDemo
+                      card={projectDetails[index]}
+                      onHoverEnter={handleCardMouseEnter}
+                      onHoverLeave={handleCardMouseLeave}
+                      onClose={() => {
+                        setExpandCardIndex(null);
+                        setCursorActive(false);
+                      }}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          )}
-
-          <AnimatePresence>
-            {expandCardIndex === index && (
-              <motion.div
-                key={`expand-modal-${index}`}
-                className="absolute inset-0 z-50"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.95 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <ExpandableCardDemo
-                  card={projectDetails[index]}
-                  onHoverEnter={handleCardMouseEnter}
-                  onHoverLeave={handleCardMouseLeave}
-                  onClose={() => {
-                    setExpandCardIndex(null);
-                    setCursorActive(false);
-                  }}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      ))}
-    </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
   );
+
 
   // 4. Credentials - Keep existing 
 
@@ -758,25 +822,37 @@ export default function Home() {
   ]
 
   const renderCredentials = () => (
-    <main>
-      <div>
-        {certificate.map((certificate, index) => (
-          <Credential
-            index={index}
-            title={certificate.title}
-            setModal={setModal}
-            setFullScreenModal={setFullScreenModal}
-            key={index}
-          />
-        ))}
-      </div>
-      <Modal modal={modal} certificates={certificate} />
-      <FullScreenModal
-        modal={fullScreenModal}
-        certificates={certificate}
-        onClose={() => setFullScreenModal({ active: false, index: 0 })}
-      />
-    </main>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+    >
+      <main>
+        <div>
+          {certificate.map((certificate, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 + 0.2, duration: 0.3 }}
+            >
+              <Credential
+                index={index}
+                title={certificate.title}
+                setModal={setModal}
+                setFullScreenModal={setFullScreenModal}
+              />
+            </motion.div>
+          ))}
+        </div>
+        <Modal modal={modal} certificates={certificate} />
+        <FullScreenModal
+          modal={fullScreenModal}
+          certificates={certificate}
+          onClose={() => setFullScreenModal({ active: false, index: 0 })}
+        />
+      </main>
+    </motion.div>
   );
 
   // 5. Contact - removed framer-motion animations (static anchors)
@@ -791,37 +867,56 @@ export default function Home() {
     ];
 
     return (
-      <div className="w-full max-w-2xl mx-auto space-y-6">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Get In Touch</h2>
-          <p className="text-[var(--text-secondary)]">Let&apos;s connect and work together</p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <div className="w-full max-w-2xl mx-auto space-y-6">
+          <motion.div
+            className="text-center mb-8"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Get In Touch</h2>
+            <p className="text-[var(--text-secondary)]">Let&apos;s connect and work together</p>
+          </motion.div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {contacts.map((contact, index) => (
+              <motion.a
+                key={contact.name}
+                href={contact.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 + 0.3, duration: 0.3 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl p-4 hover:shadow-lg transition-all duration-300 group text-center"
+              >
+                <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${contact.color} flex items-center justify-center text-xl mx-auto mb-3 group-hover:scale-110 transition-transform`}>
+                  {contact.icon}
+                </div>
+                <h3 className="font-semibold text-[var(--text-primary)] text-sm group-hover:text-[var(--text-primary)]">
+                  {contact.name}
+                </h3>
+              </motion.a>
+            ))}
+          </div>
+          <motion.div
+            className="text-center mt-8 p-6 bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+              I&apos;m always open to discussing new opportunities, collaborations, or just having a friendly chat about technology and development.
+            </p>
+          </motion.div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {contacts.map((contact, index) => (
-            <a
-              key={contact.name}
-              href={contact.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl p-4 hover:shadow-lg transition-all duration-300 group text-center"
-              aria-label={contact.name}
-            >
-              <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${contact.color} flex items-center justify-center text-xl mx-auto mb-3 group-hover:scale-110 transition-transform`}>
-                {contact.icon}
-              </div>
-              <h3 className="font-semibold text-[var(--text-primary)] text-sm group-hover:text-[var(--text-primary)]">
-                {contact.name}
-              </h3>
-            </a>
-          ))}
-
-        </div>
-        <div className="text-center mt-8 p-6 bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl">
-          <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
-            I&apos;m always open to discussing new opportunities, collaborations, or just having a friendly chat about technology and development.
-          </p>
-        </div>
-      </div>
+      </motion.div>
     );
   };
 
