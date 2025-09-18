@@ -32,8 +32,14 @@ export default function ExpandableCardDemo({
   onHoverEnter,
   onHoverLeave,
 }: ExpandableCardDemoProps) {
+  // Initialize dark mode state immediately to prevent white flicker
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
   const [active, setActive] = useState<CardType | null>(initialCard ?? null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -168,14 +174,17 @@ export default function ExpandableCardDemo({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/20 h-full w-full z-[999998] backdrop-blur-sm"
+            style={{
+              backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.2)'
+            }}
           />
 
           {/* Modal container */}
-          <div className="fixed inset-0 grid place-items-center z-[999999]">
+          <div className="fixed inset-0 grid place-items-center z-[999999] [transform-style:preserve-3d]">
             {/* 3d-card wrapper for effects */}
-            <CardContainer containerClassName="inter-var py-0">
+            <CardContainer containerClassName="inter-var py-0 flex items-center justify-center">
               <CardBody
-                className={`relative group/card w-auto sm:w-[30rem] h-auto rounded-xl p-6 sm:p-6 border shadow-xl ${isDarkMode
+                className={`relative group/card w-auto sm:w-[30rem] h-auto rounded-xl p-6 sm:p-6 border shadow-xl [transform-style:preserve-3d] [&>*]:[transform-style:preserve-3d] ${isDarkMode
                   ? 'bg-[var(--card-background)] border-[var(--card-border)]'
                   : 'bg-white border-gray-200'
                   } sm:mx-0 mx-4`}
@@ -198,13 +207,30 @@ export default function ExpandableCardDemo({
                 <motion.div
                   layoutId={`card-${active.title}-${id}`}
                   ref={ref}
-                  initial={{ opacity: 0, scale: 0.98, y: 8 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.98, y: 8 }}
+                  initial={{
+                    opacity: 0,
+                    scale: 0.98,
+                    y: 8,
+                    backgroundColor: isDarkMode ? 'var(--card-background)' : 'white'
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    backgroundColor: isDarkMode ? 'var(--card-background)' : 'white'
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.98,
+                    y: 8
+                  }}
                   transition={{ duration: 0.28 }}
                   onMouseEnter={() => onHoverEnter?.()}
                   onMouseLeave={() => onHoverLeave?.()}
-                  className="project-card max-h-[80vh] overflow-auto sm:max-h-[60vh]"
+                  className="project-card sm:max-h-none max-h-[80vh] sm:overflow-visible overflow-auto"
+                  style={{
+                    backgroundColor: isDarkMode ? 'var(--card-background)' : 'white'
+                  }}
                 >
                   <CardItem translateZ={50} className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'
                     }`}>
@@ -260,7 +286,7 @@ export default function ExpandableCardDemo({
                         <div
                           id={`expandable-content-${id}`}
                           ref={contentRef}
-                          className="space-y-4 max-h-[30vh] overflow-auto pr-2 pb-0 text-[12px]"
+                          className="space-y-4 sm:max-h-[25vh] max-h-[30vh] overflow-auto pr-2 pb-0 text-[12px]"
                         >
                           {typeof active.content === "function"
                             ? active.content()
