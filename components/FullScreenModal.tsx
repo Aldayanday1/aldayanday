@@ -15,12 +15,6 @@ interface FullScreenModalProps {
     onClose: () => void;
 }
 
-const scaleAnimation = {
-    initial: { scale: 0, opacity: 0 },
-    enter: { scale: 1, opacity: 1 },
-    closed: { scale: 0, opacity: 0 }
-};
-
 export default function FullScreenModal({ modal, certificates, onClose }: FullScreenModalProps) {
     const { active, index } = modal;
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -63,50 +57,48 @@ export default function FullScreenModal({ modal, certificates, onClose }: FullSc
     const currentCertificate = certificates[index];
 
     return (
-        <motion.div
-            ref={overlayRef}
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            style={{
-                // Transparent + blur glass effect (light/dark aware)
-                background: isDarkMode ? 'rgba(0,0,0,0.28)' : 'rgba(255,255,255,0.06)',
-                backdropFilter: 'blur(5px)',
-                WebkitBackdropFilter: 'blur(5px)'
-            }}
-            variants={scaleAnimation}
-            initial="initial"
-            animate="enter"
-            exit="closed"
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            onClick={(e) => {
-                if (e.target === overlayRef.current) {
-                    onClose();
-                }
-            }}
-        >
+        <div className="fixed inset-0 z-50">
+            {/* Overlay + blur */}
             <motion.div
-                className="relative max-w-4xl max-h-[90vh] w-full mx-4"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-            >
-                <Image
-                    src={`/images/${currentCertificate.src}`}
-                    alt={currentCertificate.title}
-                    width={800}
-                    height={600}
-                    className="w-full h-auto object-contain rounded-lg shadow-2xl"
-                    style={{ maxHeight: '90vh' }}
-                />
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/20 h-full w-full backdrop-blur-sm"
+                onClick={(e) => {
+                    // clicking the overlay (outside the modal content) closes the modal
+                    if (e.target === e.currentTarget) onClose();
+                }}
+            />
 
-                <button
-                    onClick={onClose}
-                    className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold transition-colors bg-black text-white hover:bg-gray-200'}`}
-                    aria-label="Close modal"
+            {/* Modal container */}
+            <div className="fixed inset-0 grid place-items-center z-[999999] pointer-events-none">
+                <motion.div
+                    ref={overlayRef}
+                    className="relative max-w-4xl max-h-[90vh] w-full mx-4 pointer-events-auto"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
                 >
-                    ×
-                </button>
-            </motion.div>
-        </motion.div>
+                    <Image
+                        src={`/images/${currentCertificate.src}`}
+                        alt={currentCertificate.title}
+                        width={800}
+                        height={600}
+                        className="w-full h-auto object-contain rounded-lg shadow-2xl"
+                        style={{ maxHeight: '90vh' }}
+                    />
+
+                    <button
+                        onClick={onClose}
+                        className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold transition-colors bg-black text-white hover:bg-gray-100 hover:text-black"
+                        aria-label="Close modal"
+                        style={{ zIndex: 3 }}
+                    >
+                        ×
+                    </button>
+                </motion.div>
+            </div>
+        </div>
     );
 }

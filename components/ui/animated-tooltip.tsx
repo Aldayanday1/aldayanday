@@ -19,7 +19,7 @@ export const AnimatedTooltip = ({
       className?: string;
       style?: React.CSSProperties;
     }>;
-    color: string;
+    // color: string;
   }[];
   isDarkMode?: boolean;
 }) => {
@@ -121,8 +121,10 @@ export const AnimatedTooltip = ({
                   top: pos.top,
                   transform: "translateX(0)",
                   pointerEvents: "none",
+                  // high z-index so tooltip appears above modals and custom cursor
+                  zIndex: 10000001,
                 }}
-                className="z-[9999] pointer-events-none"
+                className="pointer-events-none"
               >
                 <div className={`px-3 py-2 rounded-md text-xs shadow-xl ${isDarkMode
                   ? 'bg-[var(--foreground)] text-[var(--card-background)] border-[var(--card-border)]'

@@ -31,6 +31,29 @@ export default function Home() {
   const [cursorActive, setCursorActive] = useState(false);
   const [expandCardIndex, setExpandCardIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    const checkTheme = () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      setIsDarkMode(isDark);
+    };
+
+    checkTheme();
+
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Detect MagneticGSAP only for Desktop (min-width: 640px)
+  const [isDesktop, setIsDesktop] = useState(true);
+  useEffect(() => {
+    const checkScreen = () => setIsDesktop(window.innerWidth >= 640);
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
+
   // debounce timeout ref to avoid flicker when moving between cards
   const hoverTimeout = useRef<number | null>(null);
 
@@ -917,29 +940,7 @@ export default function Home() {
     );
   };
 
-  useEffect(() => {
-    const checkTheme = () => {
-      const isDark = document.documentElement.classList.contains('dark');
-      setIsDarkMode(isDark);
-    };
-
-    checkTheme();
-
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-    return () => observer.disconnect();
-  }, []);
-
-  // Detect MagneticGSAP only for Desktop (min-width: 640px)
-  const [isDesktop, setIsDesktop] = useState(true);
-  useEffect(() => {
-    const checkScreen = () => setIsDesktop(window.innerWidth >= 640);
-    checkScreen();
-    window.addEventListener("resize", checkScreen);
-    return () => window.removeEventListener("resize", checkScreen);
-  }, []);
-
+  // Main Return
   return (
     <>
       {/* Silk background dengan class CSS yang stabil */}

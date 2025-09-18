@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useId, useRef, useState, ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
@@ -111,44 +112,44 @@ export default function ExpandableCardDemo({
     },
   ];
 
-  return (
-    <>
-      <AnimatePresence>
-        {active && (
+  // Create portal modal content
+  const modalContent = (
+    <AnimatePresence>
+      {active && (
+        <>
+          {/* Semi-transparent overlay - NOT full black */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 h-full w-full z-10 backdrop-blur-lg"
+            className="fixed inset-0 bg-black/20 h-full w-full z-[999998] backdrop-blur-sm"
           />
-        )}
-      </AnimatePresence>
 
-      <AnimatePresence>
-        {active && (
-          <div className="fixed inset-0 grid place-items-center z-[100]">
-            <motion.button
-              key={`button-${active.title}-${id}`}
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.05 } }}
-              className={`flex absolute top-2 right-2 lg:hidden items-center justify-center rounded-full h-6 w-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'
-                }`}
-              onClick={() => {
-                if (onClose) onClose();
-                else setActive(null);
-              }}
-            >
-              <CloseIcon />
-            </motion.button>
-
-            {/* use 3d-card wrapper for subtle layered / floating effect */}
+          {/* Modal container */}
+          <div className="fixed inset-0 grid place-items-center z-[999999]">
+            {/* 3d-card wrapper for effects */}
             <CardContainer containerClassName="inter-var py-0">
-              <CardBody className={`${isDarkMode
-                ? 'bg-[var(--card-background)] border-[var(--card-border)]'
-                : 'bg-gray-50 border-black/[0.08]'
-                } relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border`}>
+              <CardBody
+                className={`relative group/card w-auto sm:w-[30rem] h-auto rounded-xl p-6 sm:p-6 border shadow-xl ${isDarkMode
+                  ? 'bg-[var(--card-background)] border-[var(--card-border)]'
+                  : 'bg-white border-gray-200'
+                  } sm:mx-0 mx-4`}
+              >
+                {/* Close button positioned on top-right of the card */}
+                <motion.button
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0.05 } }}
+                  onClick={() => {
+                    if (onClose) onClose();
+                    else setActive(null);
+                  }}
+                  className={`absolute top-3 right-3 flex items-center justify-center rounded-full h-8 w-8 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} shadow-sm`}
+                  style={{ zIndex: 50 }}
+                >
+                  <CloseIcon />
+                </motion.button>
                 <motion.div
                   layoutId={`card-${active.title}-${id}`}
                   ref={ref}
@@ -158,9 +159,9 @@ export default function ExpandableCardDemo({
                   transition={{ duration: 0.28 }}
                   onMouseEnter={() => onHoverEnter?.()}
                   onMouseLeave={() => onHoverLeave?.()}
-                  className="project-card"
+                  className="project-card max-h-[80vh] overflow-auto sm:max-h-[60vh]"
                 >
-                  <CardItem translateZ={50} className={`text-xl font-bold ${isDarkMode ? 'text-[var(--text-primary)]' : 'text-neutral-600'
+                  <CardItem translateZ={50} className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'
                     }`}>
                     <motion.h3 layoutId={`title-${active.title}-${id}`}>
                       {active.title}
@@ -170,7 +171,7 @@ export default function ExpandableCardDemo({
                   <CardItem
                     as="p"
                     translateZ={60}
-                    className={`text-sm max-w-sm mt-2 ${isDarkMode ? 'text-[var(--text-secondary)]' : 'text-neutral-500'
+                    className={`text-sm max-w-sm mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
                       }`}
                   >
                     <motion.p layoutId={`description-${active.description}-${id}`}>
@@ -183,7 +184,7 @@ export default function ExpandableCardDemo({
                       <img
                         src={active.src}
                         alt={active.title}
-                        className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
+                        className="h-40 sm:h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
                       />
                     </motion.div>
                   </CardItem>
@@ -194,7 +195,7 @@ export default function ExpandableCardDemo({
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className={`text-sm ${isDarkMode ? 'text-[var(--text-secondary)]' : 'text-neutral-600'
+                      className={`text-[12px] ${isDarkMode ? 'text-gray-300' : 'text-gray-700'
                         }`}
                     >
                       <div className="space-y-4 max-h-[30vh] overflow-auto pr-2">
@@ -205,7 +206,7 @@ export default function ExpandableCardDemo({
                     </motion.div>
                   </CardItem>
 
-                  <div className="flex justify-between items-center mt-20">
+                  <div className="flex justify-between items-center mt-12 sm:mt-20">
                     <CardItem translateZ={60} as="div" className="flex items-center gap-2">
                       <AnimatedTooltip items={techItems} isDarkMode={isDarkMode} />
                     </CardItem>
@@ -224,10 +225,18 @@ export default function ExpandableCardDemo({
               </CardBody>
             </CardContainer>
           </div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+        </>
+      )}
+    </AnimatePresence>
+  );  // Create or get portal root (simplified)
+  let portalRoot = document.getElementById('expandable-modal-root');
+  if (!portalRoot) {
+    portalRoot = document.createElement('div');
+    portalRoot.id = 'expandable-modal-root';
+    document.body.appendChild(portalRoot);
+  }
+
+  return createPortal(modalContent, portalRoot);
 }
 
 export const CloseIcon = () => (

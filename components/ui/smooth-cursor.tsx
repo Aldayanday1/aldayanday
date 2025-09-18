@@ -232,7 +232,8 @@ export function SmoothCursor({
         translateY: "-50%",
         rotate: rotation,
         scale: scale,
-        zIndex: 100,
+        // raised z-index so the custom cursor sits above modals / overlays
+        zIndex: 10000000,
         pointerEvents: "none",
         willChange: "transform",
       }}
