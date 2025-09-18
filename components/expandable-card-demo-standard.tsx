@@ -8,6 +8,8 @@ import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { FaReact } from "react-icons/fa";
 import { SiNextdotjs, SiTypescript, SiTailwindcss } from "react-icons/si";
+import { AiOutlineClose } from 'react-icons/ai';
+import { FiChevronDown } from 'react-icons/fi';
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 
 type CardType = {
@@ -46,7 +48,74 @@ export default function ExpandableCardDemo({
   const [showScrollHint, setShowScrollHint] = useState(false);
   const [animateHint, setAnimateHint] = useState(true);
 
-  // Detect overflow and scroll position to show/hide and animate the scroll hint
+  // Ref for the card container to control 3D transforms directly
+  const cardContainerRef = useRef<HTMLDivElement>(null);
+
+  // Track mouse movement across the entire modal for 3D effect
+  useEffect(() => {
+    if (!active) return;
+
+    // Immediately activate smooth cursor when modal opens
+    if (onHoverEnter) onHoverEnter();
+
+    const handleModalMouseMove = (e: MouseEvent) => {
+      if (!cardContainerRef.current) return;
+
+      // Get the modal container bounds
+      const modalElement = document.querySelector('.fixed.inset-0.grid.place-items-center') as HTMLElement;
+      if (!modalElement) return;
+
+      const { left, top, width, height } = modalElement.getBoundingClientRect();
+      const centerX = left + width / 2;
+      const centerY = top + height / 2;
+
+      // Calculate rotation based on cursor position relative to modal center
+      const x = (e.clientX - centerX) / 30; // Sensitivity for X rotation
+      const y = (e.clientY - centerY) / 30; // Sensitivity for Y rotation
+
+      // Apply transform directly to the card
+      cardContainerRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+    };
+
+    const handleModalMouseLeave = (e: MouseEvent) => {
+      if (!cardContainerRef.current) return;
+      
+      // Only deactivate if truly leaving the modal area
+      const relatedTarget = e.relatedTarget as Element;
+      const modalElement = document.querySelector('.fixed.inset-0.grid.place-items-center') as HTMLElement;
+      
+      // Check if the mouse is actually leaving the modal bounds
+      if (!modalElement || !modalElement.contains(relatedTarget)) {
+        // Reset transform when mouse leaves the modal completely
+        cardContainerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        // Deactivate smooth cursor when leaving modal
+        if (onHoverLeave) onHoverLeave();
+      }
+    };
+
+    const handleModalMouseEnter = () => {
+      // Ensure smooth cursor stays active when entering any part of modal
+      if (onHoverEnter) onHoverEnter();
+    };
+
+    // Attach listeners to the modal area
+    const modalElement = document.querySelector('.fixed.inset-0.grid.place-items-center') as HTMLElement;
+    if (modalElement) {
+      modalElement.addEventListener('mousemove', handleModalMouseMove, { passive: true });
+      modalElement.addEventListener('mouseleave', handleModalMouseLeave);
+      modalElement.addEventListener('mouseenter', handleModalMouseEnter);
+    }
+
+    return () => {
+      if (modalElement) {
+        modalElement.removeEventListener('mousemove', handleModalMouseMove);
+        modalElement.removeEventListener('mouseleave', handleModalMouseLeave);
+        modalElement.removeEventListener('mouseenter', handleModalMouseEnter);
+      }
+      // Cleanup: deactivate smooth cursor when modal closes
+      if (onHoverLeave) onHoverLeave();
+    };
+  }, [active, onHoverEnter, onHoverLeave]);  // Detect overflow and scroll position to show/hide and animate the scroll hint
   useEffect(() => {
     const target = contentRef.current;
     if (!target) return;
@@ -180,11 +249,17 @@ export default function ExpandableCardDemo({
           />
 
           {/* Modal container */}
-          <div className="fixed inset-0 grid place-items-center z-[999999] [transform-style:preserve-3d]">
-            {/* 3d-card wrapper for effects */}
-            <CardContainer containerClassName="inter-var py-0 flex items-center justify-center">
+          <div className="fixed inset-0 grid place-items-center z-[999999] [transform-style:preserve-3d] smooth-cursor-area p-4">
+            {/* 3d-card wrapper for effects with expanded hover area */}
+            <CardContainer
+              containerClassName="inter-var py-0 flex items-center justify-center smooth-cursor-area w-full h-full"
+              expandedHoverArea={false}
+              autoActivate={true}
+              disableMouseHandlers={true}
+            >
               <CardBody
-                className={`relative group/card w-auto sm:w-[30rem] h-auto rounded-xl p-6 sm:p-6 border shadow-xl [transform-style:preserve-3d] [&>*]:[transform-style:preserve-3d] ${isDarkMode
+                ref={cardContainerRef}
+                className={`relative group/card smooth-cursor-area w-auto sm:w-[30rem] h-auto rounded-xl p-6 sm:p-6 border shadow-xl [transform-style:preserve-3d] [&>*]:[transform-style:preserve-3d] ${isDarkMode
                   ? 'bg-[var(--card-background)] border-[var(--card-border)]'
                   : 'bg-white border-gray-200'
                   } sm:mx-0 mx-4`}
@@ -199,8 +274,9 @@ export default function ExpandableCardDemo({
                     if (onClose) onClose();
                     else setActive(null);
                   }}
-                  className={`absolute top-3 right-3 flex items-center justify-center rounded-full h-8 w-8 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} shadow-sm`}
-                  style={{ zIndex: 50 }}
+                  className={`absolute top-3 right-3 project-card-close flex items-center justify-center rounded-full h-8 w-8 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} shadow-sm`}
+                  style={{ zIndex: 50, cursor: 'none' }}
+                  aria-hidden={false}
                 >
                   <CloseIcon />
                 </motion.button>
@@ -225,9 +301,7 @@ export default function ExpandableCardDemo({
                     y: 8
                   }}
                   transition={{ duration: 0.28 }}
-                  onMouseEnter={() => onHoverEnter?.()}
-                  onMouseLeave={() => onHoverLeave?.()}
-                  className="project-card sm:max-h-none max-h-[80vh] sm:overflow-visible overflow-auto"
+                  className="project-card smooth-cursor-area sm:max-h-none max-h-[80vh] sm:overflow-visible overflow-auto"
                   style={{
                     backgroundColor: isDarkMode ? 'var(--card-background)' : 'white'
                   }}
@@ -242,7 +316,7 @@ export default function ExpandableCardDemo({
                   <CardItem
                     as="p"
                     translateZ={60}
-                    className={`text-sm max-w-sm mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                    className={`text-sm max-w-sm mt-2 mb-0 sm:mb-7 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
                       }`}
                   >
                     <motion.p layoutId={`description-${active.description}-${id}`}>
@@ -286,7 +360,7 @@ export default function ExpandableCardDemo({
                         <div
                           id={`expandable-content-${id}`}
                           ref={contentRef}
-                          className="space-y-4 sm:max-h-[25vh] max-h-[30vh] overflow-auto pr-2 pb-0 text-[12px]"
+                          className="space-y-4 sm:max-h-[25vh] max-h-[30vh] overflow-auto pr-2 pb-0 text-[12px] sm:text-sm mt-0 sm:mt-8"
                         >
                           {typeof active.content === "function"
                             ? active.content()
@@ -301,17 +375,14 @@ export default function ExpandableCardDemo({
                             aria-hidden
                           >
                             <span>Scroll</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
-                              <path d="M12 5v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                              <path d="M19 12l-7 7-7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
+                            <FiChevronDown className="inline-block h-3.5 w-3.5" aria-hidden />
                           </div>
                         </div>
                       </div>
                     </motion.div>
                   </CardItem>
 
-                  <div className="flex justify-between items-center mt-3 sm:mt-20">
+                  <div className="flex justify-between items-center mt-3 sm:mt-2">
                     <CardItem translateZ={60} as="div" className="flex items-center gap-2">
                       <AnimatedTooltip items={techItems} isDarkMode={isDarkMode} />
                     </CardItem>
@@ -345,23 +416,13 @@ export default function ExpandableCardDemo({
 }
 
 export const CloseIcon = () => (
-  <motion.svg
+  <motion.span
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0, transition: { duration: 0.05 } }}
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="h-4 w-4"
+    className="inline-flex items-center justify-center h-4 w-4"
+    style={{ cursor: 'none' }}
   >
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M18 6l-12 12" />
-    <path d="M6 6l12 12" />
-  </motion.svg>
+    <AiOutlineClose className="h-4 w-4" aria-hidden />
+  </motion.span>
 );

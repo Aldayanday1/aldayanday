@@ -18,13 +18,19 @@ export const CardContainer = ({
   children,
   className,
   containerClassName,
+  expandedHoverArea = false,
+  autoActivate = false,
+  disableMouseHandlers = false,
 }: {
   children?: React.ReactNode;
   className?: string | undefined;
   containerClassName?: string;
+  expandedHoverArea?: boolean;
+  autoActivate?: boolean;
+  disableMouseHandlers?: boolean;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isMouseEntered, setIsMouseEntered] = useState(false);
+  const [isMouseEntered, setIsMouseEntered] = useState(autoActivate);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -34,13 +40,39 @@ export const CardContainer = ({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Auto-activate the hover state when autoActivate is true
+  useEffect(() => {
+    if (autoActivate && !isMobile) {
+      setIsMouseEntered(true);
+    }
+  }, [autoActivate, isMobile]);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || isMobile) return;
-    const { left, top, width, height } =
-      containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - left - width / 2) / 25;
-    const y = (e.clientY - top - height / 2) / 25;
-    containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+
+    if (expandedHoverArea) {
+      // Use the entire modal/viewport area for calculations
+      const modalElement = e.currentTarget.closest('[class*="modal"]') ||
+        e.currentTarget.closest('[class*="expandable"]') ||
+        e.currentTarget.closest('.fixed') ||
+        document.documentElement;
+
+      const { left, top, width, height } = modalElement.getBoundingClientRect();
+      const centerX = left + width / 2;
+      const centerY = top + height / 2;
+
+      // Calculate rotation based on full modal area
+      const x = (e.clientX - centerX) / 35; // Slightly reduced sensitivity for larger area
+      const y = (e.clientY - centerY) / 35;
+
+      containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+    } else {
+      // Original behavior for card-only area
+      const { left, top, width, height } = containerRef.current.getBoundingClientRect();
+      const x = (e.clientX - left - width / 2) / 25;
+      const y = (e.clientY - top - height / 2) / 25;
+      containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+    }
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -51,8 +83,21 @@ export const CardContainer = ({
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || isMobile) return;
-    setIsMouseEntered(false);
-    containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
+    if (expandedHoverArea) {
+      // Only reset when leaving the entire modal area
+      const relatedTarget = e.relatedTarget as Element;
+      const modalElement = e.currentTarget.closest('[class*="modal"]') ||
+        e.currentTarget.closest('[class*="expandable"]') ||
+        e.currentTarget.closest('.fixed');
+
+      if (!modalElement?.contains(relatedTarget)) {
+        setIsMouseEntered(false);
+        containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
+      }
+    } else {
+      setIsMouseEntered(false);
+      containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
+    }
   };
   return (
     <MouseEnterContext.Provider value={[isMouseEntered, setIsMouseEntered]}>
@@ -67,9 +112,9 @@ export const CardContainer = ({
       >
         <div
           ref={containerRef}
-          onMouseEnter={handleMouseEnter}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
+          onMouseEnter={disableMouseHandlers ? undefined : handleMouseEnter}
+          onMouseMove={disableMouseHandlers ? undefined : handleMouseMove}
+          onMouseLeave={disableMouseHandlers ? undefined : handleMouseLeave}
           className={cn(
             "flex items-center justify-center relative transition-all duration-200 ease-linear",
             className
@@ -85,15 +130,16 @@ export const CardContainer = ({
   );
 };
 
-export const CardBody = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode | React.ReactNode[];
-  className?: string | undefined;
-}) => {
+export const CardBody = React.forwardRef<
+  HTMLDivElement,
+  {
+    children: React.ReactNode | React.ReactNode[];
+    className?: string | undefined;
+  }
+>(({ children, className }, ref) => {
   return (
     <div
+      ref={ref}
       className={cn(
         "h-96 w-96 [transform-style:preserve-3d]  [&>*]:[transform-style:preserve-3d]",
         className
@@ -102,7 +148,9 @@ export const CardBody = ({
       {children}
     </div>
   );
-};
+});
+
+CardBody.displayName = "CardBody";
 
 export const CardItem = <T extends keyof React.JSX.IntrinsicElements = "div">({
   as: Tag = "div" as T,
