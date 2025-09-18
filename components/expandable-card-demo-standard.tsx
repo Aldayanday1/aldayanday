@@ -79,11 +79,11 @@ export default function ExpandableCardDemo({
 
     const handleModalMouseLeave = (e: MouseEvent) => {
       if (!cardContainerRef.current) return;
-      
+
       // Only deactivate if truly leaving the modal area
       const relatedTarget = e.relatedTarget as Element;
       const modalElement = document.querySelector('.fixed.inset-0.grid.place-items-center') as HTMLElement;
-      
+
       // Check if the mouse is actually leaving the modal bounds
       if (!modalElement || !modalElement.contains(relatedTarget)) {
         // Reset transform when mouse leaves the modal completely
