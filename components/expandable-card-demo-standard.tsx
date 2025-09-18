@@ -285,7 +285,7 @@ export default function ExpandableCardDemo({
                     </motion.div>
                   </CardItem>
 
-                  <div className="flex justify-between items-center mt-6 sm:mt-20">
+                  <div className="flex justify-between items-center mt-3 sm:mt-20">
                     <CardItem translateZ={60} as="div" className="flex items-center gap-2">
                       <AnimatedTooltip items={techItems} isDarkMode={isDarkMode} />
                     </CardItem>
