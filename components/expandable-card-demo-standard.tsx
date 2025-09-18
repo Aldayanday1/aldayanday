@@ -256,30 +256,32 @@ export default function ExpandableCardDemo({
                         }
                       `}</style>
 
-                      <div
-                        id={`expandable-content-${id}`}
-                        ref={contentRef}
-                        className="space-y-4 max-h-[30vh] overflow-auto pr-2"
-                      >
-                        {typeof active.content === "function"
-                          ? active.content()
-                          : active.content}
-                      </div>
-
-                      {/* Scroll hint: shows only when content overflows and animates until scrolled to bottom */}
-                      {showScrollHint && (
+                      <div>
                         <div
-                          id={`scroll-hint-${id}`}
-                          className={`mt-3 flex items-center gap-2 text-[12px] select-none justify-start ${animateHint ? 'animate-hint' : ''} ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
-                          aria-hidden
+                          id={`expandable-content-${id}`}
+                          ref={contentRef}
+                          className="space-y-4 max-h-[30vh] overflow-auto pr-2 pb-0 text-[12px]"
                         >
-                          <span>Scroll</span>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
-                            <path d="M12 5v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M19 12l-7 7-7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
+                          {typeof active.content === "function"
+                            ? active.content()
+                            : active.content}
                         </div>
-                      )}
+
+                        {/* Reserve a fixed-height area for the hint so layout doesn't jump when it appears/disappears */}
+                        <div id={`scroll-hint-wrapper-${id}`} className="mt-3 h-6 flex items-center">
+                          <div
+                            id={`scroll-hint-${id}`}
+                            className={`w-full flex items-center gap-2 text-[12px] select-none justify-start transition-opacity duration-200 ${animateHint ? 'animate-hint' : ''} ${showScrollHint ? 'opacity-100' : 'opacity-0'} ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                            aria-hidden
+                          >
+                            <span>Scroll</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
+                              <path d="M12 5v14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              <path d="M19 12l-7 7-7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
                     </motion.div>
                   </CardItem>
 
