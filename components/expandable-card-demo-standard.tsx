@@ -9,7 +9,7 @@ import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { FaReact } from "react-icons/fa";
 import { SiNextdotjs, SiTypescript, SiTailwindcss } from "react-icons/si";
 import { AiOutlineClose } from 'react-icons/ai';
-import { FiChevronDown } from 'react-icons/fi';
+import { IoArrowDown } from "react-icons/io5";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 
 type CardType = {
@@ -376,7 +376,7 @@ export default function ExpandableCardDemo({
                         <div
                           id={`expandable-content-${id}`}
                           ref={contentRef}
-                          className="space-y-4 sm:max-h-[25vh] max-h-[30vh] overflow-auto pr-2 pb-0 text-[12px] sm:text-sm mt-0 sm:mt-8"
+                          className="space-y-4 sm:max-h-[25vh] max-h-[30vh] overflow-auto pr-2 pb-0 text-[12.5px] sm:text-sm mt-0 sm:mt-8"
                         >
                           {typeof active.content === "function"
                             ? active.content()
@@ -387,11 +387,11 @@ export default function ExpandableCardDemo({
                         <div id={`scroll-hint-wrapper-${id}`} className="mt-3 h-6 flex items-center">
                           <div
                             id={`scroll-hint-${id}`}
-                            className={`w-full flex items-center gap-2 text-[12px] select-none justify-start transition-opacity duration-200 ${animateHint ? 'animate-hint' : ''} ${showScrollHint ? 'opacity-100' : 'opacity-0'} ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                            className={`w-full flex items-center gap-2 text-[12.5px] select-none justify-start transition-opacity duration-200 ${animateHint ? 'animate-hint' : ''} ${showScrollHint ? 'opacity-100' : 'opacity-0'} ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
                             aria-hidden
                           >
                             <span>Scroll</span>
-                            <FiChevronDown className="inline-block h-3.5 w-3.5" aria-hidden />
+                            <IoArrowDown className="inline-block h-3 w-3" aria-hidden />
                           </div>
                         </div>
                       </div>

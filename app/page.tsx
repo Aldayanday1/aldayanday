@@ -318,13 +318,6 @@ export default function Home() {
     },
   ];
 
-  const techLogos = [
-    { node: <SiReact />, title: "React", href: "https://react.dev" },
-    { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
-    { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
-    { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
-  ];
-
   // Tambahkan data detail untuk expandable card di project
   const projectDetails = [
     {
@@ -395,6 +388,13 @@ export default function Home() {
         </>
       ),
     },
+  ];
+
+  const techLogos = [
+    { node: <SiReact />, title: "React", href: "https://react.dev" },
+    { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
+    { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
+    { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
   ];
 
   // 3. Project - Keep existing design
@@ -1297,7 +1297,7 @@ export default function Home() {
       <GradualBlur
         target="page"
         position="bottom"
-        height="10rem"
+        height="6rem"
         strength={2}
         divCount={5}
         curve="bezier"
