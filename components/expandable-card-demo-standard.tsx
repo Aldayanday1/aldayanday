@@ -51,11 +51,27 @@ export default function ExpandableCardDemo({
   // Ref for the card container to control 3D transforms directly
   const cardContainerRef = useRef<HTMLDivElement>(null);
 
+  // Detect mobile (<= 640px) so we can disable 3D effects on small devices
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 640 : false
+  );
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 640);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   // Track mouse movement across the entire modal for 3D effect
   useEffect(() => {
-    if (!active) return;
+    // Only attach modal-level mouse tracking on non-mobile devices
+    if (!active || isMobile) {
+      // If modal is open but we're on mobile, ensure any cursor state is off
+      if (onHoverLeave) onHoverLeave();
+      return;
+    }
 
-    // Immediately activate smooth cursor when modal opens
+    // Immediately activate smooth cursor when modal opens (desktop only)
     if (onHoverEnter) onHoverEnter();
 
     const handleModalMouseMove = (e: MouseEvent) => {
@@ -115,7 +131,7 @@ export default function ExpandableCardDemo({
       // Cleanup: deactivate smooth cursor when modal closes
       if (onHoverLeave) onHoverLeave();
     };
-  }, [active, onHoverEnter, onHoverLeave]);  // Detect overflow and scroll position to show/hide and animate the scroll hint
+  }, [active, onHoverEnter, onHoverLeave, isMobile]);
   useEffect(() => {
     const target = contentRef.current;
     if (!target) return;
@@ -249,12 +265,12 @@ export default function ExpandableCardDemo({
           />
 
           {/* Modal container */}
-          <div className="fixed inset-0 grid place-items-center z-[999999] [transform-style:preserve-3d] smooth-cursor-area p-4">
+          <div className="fixed inset-0 grid place-items-center z-[999999] [transform-style:preserve-3d] smooth-cursor-area">
             {/* 3d-card wrapper for effects with expanded hover area */}
             <CardContainer
               containerClassName="inter-var py-0 flex items-center justify-center smooth-cursor-area w-full h-full"
               expandedHoverArea={false}
-              autoActivate={true}
+              autoActivate={!isMobile}
               disableMouseHandlers={true}
             >
               <CardBody

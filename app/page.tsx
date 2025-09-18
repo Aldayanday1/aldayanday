@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
+import { Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from "motion/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faYoutube, faLinkedin } from '@fortawesome/free-brands-svg-icons';
@@ -19,12 +20,53 @@ import { CometCard } from "@/components/ui/comet-card"; // added import
 import ExpandableCardDemo from "@/components/expandable-card-demo-standard"; // Import komponen expandable card
 import Silk from '@/components/Silk';
 import tabsStyles from "@/components/Tabs.module.css";
+import { FloatingDock } from "@/components/ui/floating-dock";
+import { IoPersonOutline, IoCodeSlashOutline } from "react-icons/io5";
+import { LiaProjectDiagramSolid } from "react-icons/lia";
+import { PiEnvelopeSimple, PiCertificate } from "react-icons/pi";
+import { toggleThemeWithRippleFromElement } from "@/lib/theme-utils";
 
 // Define a type for tab IDs to ensure type safety
 type TabId = "About" | "Stack" | "Project" | "Credentials" | "Contact";
 
+// Dock items for FloatingDock
+const dockItems = [
+  {
+    title: "About",
+    icon: <IoPersonOutline className="h-full w-full text-[var(--icon-color)]" />,
+    href: "#",
+    onClick: () => { } // Will be set in component
+  },
+  {
+    title: "Stack",
+    icon: <IoCodeSlashOutline className="h-full w-full text-[var(--icon-color)]" />,
+    href: "#",
+    onClick: () => { } // Will be set in component
+  },
+  {
+    title: "Project",
+    icon: <LiaProjectDiagramSolid className="h-full w-full text-[var(--icon-color)]" />,
+    href: "#",
+    onClick: () => { } // Will be set in component
+  },
+  {
+    title: "Credentials",
+    icon: <PiCertificate className="h-full w-full text-[var(--icon-color)]" />,
+    href: "#",
+    onClick: () => { } // Will be set in component
+  },
+  {
+    title: "Contact",
+    icon: <PiEnvelopeSimple className="h-full w-full text-[var(--icon-color)]" />,
+    href: "#",
+    onClick: () => { } // Will be set in component
+  },
+];
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>("Project");
+  const [tabsVisible, setTabsVisible] = useState(true);
+  const tabsRef = useRef<HTMLDivElement | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false); // Will be set correctly in useEffect
   const [modal, setModal] = useState({ active: false, index: 0 })
   const [fullScreenModal, setFullScreenModal] = useState({ active: false, index: 0 })
@@ -44,6 +86,20 @@ export default function Home() {
 
     return () => observer.disconnect();
   }, []);
+
+  // observe tabs visibility so we can show/hide FloatingDock when tabs are scrolled out
+  useEffect(() => {
+    if (!tabsRef.current) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const e = entries[0];
+        setTabsVisible(e.isIntersecting);
+      },
+      { root: null, threshold: 0.1 }
+    );
+    obs.observe(tabsRef.current);
+    return () => obs.disconnect();
+  }, [tabsRef]);
 
   // Detect MagneticGSAP only for Desktop (min-width: 640px)
   const [isDesktop, setIsDesktop] = useState(true);
@@ -250,7 +306,16 @@ export default function Home() {
       image: "/images/projects-2.png", // Social media related image from Unsplash
       buttonText: "Read More",
       link: "https://github.com/your-username/social-api"
-    }
+    },
+    {
+      id: 4,
+      title: "Task Management App",
+      description: "Task app built with Next.js and TypeScript. Features real-time collab, drag & drop, team management, and progress tracking.",
+      logo: "📋",
+      image: "/images/projects-4.png", // Task management related image from Unsplash
+      buttonText: "View Details",
+      link: "https://github.com/your-username/task-app"
+    },
   ];
 
   const techLogos = [
@@ -299,6 +364,23 @@ export default function Home() {
     {
       description: "Social Media API",
       title: "Social Media API",
+      src: "/images/projects-2.png",
+      ctaText: "See Live",
+      ctaLink: "https://github.com/your-username/social-api",
+      content: () => (
+        <>
+          <p>
+            Social Media API is a robust RESTful backend service created using Node.js and Express, tailored for modern social media platforms. It handles user authentication securely, manages posts, comments, and likes, while supporting real-time messaging through WebSocket integration.
+          </p>
+          <p>
+            The API includes comprehensive documentation with Swagger, rate limiting for performance, and data validation to ensure reliability. It supports scalable database operations with MongoDB, making it ideal for high-traffic applications requiring efficient data handling and user privacy controls.
+          </p>
+        </>
+      ),
+    },
+    {
+      description: "Social Media API",
+      title: "Social Media APIaaaHH",
       src: "/images/projects-2.png",
       ctaText: "See Live",
       ctaLink: "https://github.com/your-username/social-api",
@@ -961,10 +1043,12 @@ export default function Home() {
         </div>
       )}
 
-      {/* Theme toggler */}
-      <div className="fixed top-4 right-4 z-50">
-        <AnimatedThemeToggler onToggle={setIsDarkMode} />
-      </div>
+      {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
+      {tabsVisible && (
+        <div className="fixed top-4 right-4 z-50">
+          <AnimatedThemeToggler onToggle={setIsDarkMode} />
+        </div>
+      )}
 
       {/* Hero Section */}
       <div className="flex items-center justify-center w-full px-3 text-center sm:mt-0 mt-4" style={{ minHeight: "65vh" }}>
@@ -1103,6 +1187,8 @@ export default function Home() {
               </motion.a>
             ))}
           </motion.div>
+
+          {/* FloatingDock Navigation - (moved) */}
         </div>
       </div>
 
@@ -1114,7 +1200,7 @@ export default function Home() {
         viewport={{ once: true }}
         transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
       >
-        <div className={tabsStyles.tabs}>
+        <div ref={tabsRef} className={tabsStyles.tabs}>
           {tabs.map((tab) =>
             isDesktop ? (
               <MagneticGSAP
@@ -1160,11 +1246,58 @@ export default function Home() {
         </div>
       </motion.div>
 
+      {/* FloatingDock placed above the GradualBlur (bottom of page) */}
+      {/* FloatingDock: only show when original tabs are not visible (scrolled out) */}
+      <AnimatePresence>
+        {!tabsVisible && (
+          <motion.div
+            key="floating-dock"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 18 }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+            className="fixed left-0 right-0 md:bottom-8 bottom-6 z-[1200] flex md:justify-center justify-end pointer-events-none px-4"
+          >
+            <motion.div className="pointer-events-auto" initial={{ scale: 0.98 }} animate={{ scale: 1 }} exit={{ scale: 0.98 }}>
+              <FloatingDock
+                items={
+                  // include theme toggle as first item when dock appears
+                  [
+                    {
+                      title: 'Theme',
+                      icon: isDarkMode ? (
+                        <Sun className="h-full w-full text-[var(--icon-color)]" />
+                      ) : (
+                        <Moon className="h-full w-full text-[var(--icon-color)]" />
+                      ),
+                      href: '#',
+                      onClick: async (event: React.MouseEvent<HTMLButtonElement>) => {
+                        // Use the clicked button element for ripple animation
+                        const buttonElement = event.currentTarget;
+                        const newDarkState = await toggleThemeWithRippleFromElement(
+                          buttonElement,
+                          setIsDarkMode
+                        );
+                        setIsDarkMode(newDarkState);
+                      },
+                    },
+                    ...dockItems.map(item => ({
+                      ...item,
+                      onClick: () => setActiveTab(item.title as TabId),
+                    })),
+                  ]
+                }
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* GradualBlur at the bottom of the page */}
       <GradualBlur
         target="page"
         position="bottom"
-        height="6rem"
+        height="10rem"
         strength={2}
         divCount={5}
         curve="bezier"
