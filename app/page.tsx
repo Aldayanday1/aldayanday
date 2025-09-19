@@ -25,46 +25,23 @@ import { LiaProjectDiagramSolid } from "react-icons/lia";
 import { PiEnvelopeSimple, PiCertificate } from "react-icons/pi";
 import { toggleThemeWithRippleFromElement } from "@/lib/theme-utils";
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
-
-// Define a type for tab IDs to ensure type safety
-type TabId = "About" | "Stack" | "Project" | "Credentials" | "Contact";
-
-// Dock items for FloatingDock
-const dockItems = [
-  {
-    title: "About",
-    icon: <IoPersonOutline className="h-full w-full text-[var(--icon-color)]" />,
-    href: "#",
-    onClick: () => { } // Will be set in component
-  },
-  {
-    title: "Stack",
-    icon: <IoCodeSlashOutline className="h-full w-full text-[var(--icon-color)]" />,
-    href: "#",
-    onClick: () => { } // Will be set in component
-  },
-  {
-    title: "Project",
-    icon: <LiaProjectDiagramSolid className="h-full w-full text-[var(--icon-color)]" />,
-    href: "#",
-    onClick: () => { } // Will be set in component
-  },
-  {
-    title: "Credentials",
-    icon: <PiCertificate className="h-full w-full text-[var(--icon-color)]" />,
-    href: "#",
-    onClick: () => { } // Will be set in component
-  },
-  {
-    title: "Contact",
-    icon: <PiEnvelopeSimple className="h-full w-full text-[var(--icon-color)]" />,
-    href: "#",
-    onClick: () => { } // Will be set in component
-  },
-];
+import Preloader from '@/components/preloader';
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   const [initialMount, setInitialMount] = useState(true);
+
+  useEffect(() => {
+    // Preloader logic
+    (async () => {
+      // Optional: Load any external libraries here
+      setTimeout(() => {
+        setIsLoading(false);
+        document.body.style.cursor = 'default';
+        window.scrollTo(0, 0);
+      }, 2000);
+    })();
+  }, []);
 
   useEffect(() => {
     // mark that initial mount has completed after a short tick so subsequent toggles are snappy
@@ -148,6 +125,43 @@ export default function Home() {
       hoverTimeout.current = null;
     }, 250); // 250ms debounce — adjust as needed (200-400ms recommended)
   };
+
+  // Define a type for tab IDs to ensure type safety
+  type TabId = "About" | "Stack" | "Project" | "Credentials" | "Contact";
+
+  // Dock items for FloatingDock
+  const dockItems = [
+    {
+      title: "About",
+      icon: <IoPersonOutline className="h-full w-full text-[var(--icon-color)]" />,
+      href: "#",
+      onClick: () => { } // Will be set in component
+    },
+    {
+      title: "Stack",
+      icon: <IoCodeSlashOutline className="h-full w-full text-[var(--icon-color)]" />,
+      href: "#",
+      onClick: () => { } // Will be set in component
+    },
+    {
+      title: "Project",
+      icon: <LiaProjectDiagramSolid className="h-full w-full text-[var(--icon-color)]" />,
+      href: "#",
+      onClick: () => { } // Will be set in component
+    },
+    {
+      title: "Credentials",
+      icon: <PiCertificate className="h-full w-full text-[var(--icon-color)]" />,
+      href: "#",
+      onClick: () => { } // Will be set in component
+    },
+    {
+      title: "Contact",
+      icon: <PiEnvelopeSimple className="h-full w-full text-[var(--icon-color)]" />,
+      href: "#",
+      onClick: () => { } // Will be set in component
+    },
+  ];
 
   const tabs: { id: TabId; label: string }[] = [
     { id: "About", label: "About" },
@@ -1149,290 +1163,298 @@ export default function Home() {
 
   // Main Return
   return (
-    <>
-      {/* Silk background dengan class CSS yang stabil */}
-      {isDarkMode && (
-        <div className="silk-background" style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: -1,
-          overflow: 'hidden'
-        }}>
-          <Silk
-            speed={5}
-            scale={1}
-            color="#404040"
-            noiseIntensity={1.5}
-            rotation={0}
-          />
-        </div>
-      )}
-
-      {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
-      <AnimatePresence>
-        {tabsVisible && (
-          <motion.div
-            key="top-theme-toggler"
-            initial={{ opacity: 0, y: -8, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.9 }}
-            transition={{ duration: 0.28, ease: "easeOut" }}
-            className="fixed top-4 right-4 z-50"
-          >
-            <AnimatedThemeToggler onToggle={setIsDarkMode} initialDelay={initialMount ? 0.4 : 0.12} />
-          </motion.div>
-        )}
+    <main>
+      <AnimatePresence mode='wait'>
+        {isLoading && <Preloader />}
       </AnimatePresence>
 
-      {/* Hero Section */}
-      <div className="flex items-center justify-center w-full px-3 text-center sm:mt-0 mt-4" style={{ minHeight: "65vh" }}>
-        <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 max-w-2xl">
-          {/* Profile Image with Status */}
-          <div className="relative py-4 sm:py-6 -mt-16">
-            {/* Status Badge with Animation */}
-            <motion.div
-              className="absolute -top-8 sm:-top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-2 px-3 sm:px-3 py-1 rounded-full border"
-              style={{
-                backgroundColor: 'var(--status-badge-bg)',
-                borderColor: 'var(--status-badge-border)',
-                color: 'var(--status-badge-text)',
-                backdropFilter: 'blur(10px)'
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-            >
-              <motion.span
-                className="w-[7px] h-[7px] sm:w-[10px] sm:h-[10px] rounded-full bg-purple-500"
-                animate={{
-                  opacity: [1, 0, 1],
-                  boxShadow: [
-                    "0 0 0 0 rgba(139, 92, 246, 0.7)",
-                    "0 0 0 6px rgba(139, 92, 246, 0)",
-                    "0 0 0 0 rgba(139, 92, 246, 0.7)"
-                  ]
-                }}
-                transition={{ repeat: Infinity, duration: 1 }}
+      {!isLoading && (
+        <>
+          {/* Silk background dengan class CSS yang stabil */}
+          {isDarkMode && (
+            <div className="silk-background" style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: -1,
+              overflow: 'hidden'
+            }}>
+              <Silk
+                speed={5}
+                scale={1}
+                color="#404040"
+                noiseIntensity={1.5}
+                rotation={0}
               />
-              <span className='text-[11px] sm:text-[14px]'>Active</span>
-            </motion.div>
+            </div>
+          )}
 
-            {/* Profile Image with Animation */}
-            <motion.div
-              className="w-20 h-20 sm:w-27 sm:h-27 rounded-full overflow-hidden bg-transparent shadow-xl mt-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{ y: -5, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              <img
-                src="images/profile-3.png"
-                alt="Profile"
-                className="w-full h-full object-cover"
-                style={{ objectPosition: 'center 10%' }}
-              />
-            </motion.div>
-          </div>
-
-          {/* Profile Text with Animation */}
-          <div className="space-y-2">
-            <TextAnimate
-              animation="blurIn"
-              by="character"
-              delay={0.2}
-              once={true}  // Tambahkan ini agar animasi hanya sekali
-              className="text-[16px] sm:text-[20px] md:text-[24px] font-bold text-[var(--text-primary)]"
-            >
-              Mochamad Aldi Raihan Fachrizal
-            </TextAnimate>
-            <TextAnimate
-              animation="blurIn"
-              by="character"
-              delay={0.3}
-              once={true}  // Tambahkan ini
-              className="text-[14px] sm:text-[16px] md:text-[18px] font-bold text-[var(--text-secondary)]"
-            >
-              Im a Fullstack Developer.
-
-            </TextAnimate>
-            <TextAnimate
-              animation="blurIn"
-              by="character"
-              delay={0.4}
-              once={true}  // Tambahkan ini
-              className="text-[12.5px] sm:text-[14px] md:text-[16px] text-[var(--text-secondary)]"
-            >
-              I spend most of time thinking about Tea.
-            </TextAnimate>
-            <div className="text-[11.5px] sm:text-[12px] md:text-[14px] text-[var(--text-secondary)] flex items-center justify-center gap-1">
+          {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
+          <AnimatePresence>
+            {tabsVisible && (
               <motion.div
-                initial={{ opacity: 0, filter: 'blur(10px)' }}
-                whileInView={{ opacity: 1, filter: 'blur(0px)' }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.45, duration: 0.5 }}
+                key="top-theme-toggler"
+                initial={{ opacity: 0, y: -8, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.9 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+                className="fixed top-4 right-4 z-50"
               >
-                <FontAwesomeIcon icon={faLocationDot} className="text-[12px] sm:text-[12px] md:text-[14px]" />
+                <AnimatedThemeToggler onToggle={setIsDarkMode} initialDelay={initialMount ? 0.4 : 0.12} />
               </motion.div>
-              <TextAnimate
-                animation="blurIn"
-                by="character"
-                delay={0.5}
-                once={true}
+            )}
+          </AnimatePresence>
+
+          {/* Hero Section */}
+          <div className="flex items-center justify-center w-full px-3 text-center sm:mt-0 mt-4" style={{ minHeight: "65vh" }}>
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 max-w-2xl">
+              {/* Profile Image with Status */}
+              <div className="relative py-4 sm:py-6 -mt-16">
+                {/* Status Badge with Animation */}
+                <motion.div
+                  className="absolute -top-8 sm:-top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-2 px-3 sm:px-3 py-1 rounded-full border"
+                  style={{
+                    backgroundColor: 'var(--status-badge-bg)',
+                    borderColor: 'var(--status-badge-border)',
+                    color: 'var(--status-badge-text)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1, duration: 0.5 }}
+                >
+                  <motion.span
+                    className="w-[7px] h-[7px] sm:w-[10px] sm:h-[10px] rounded-full bg-purple-500"
+                    animate={{
+                      opacity: [1, 0, 1],
+                      boxShadow: [
+                        "0 0 0 0 rgba(139, 92, 246, 0.7)",
+                        "0 0 0 6px rgba(139, 92, 246, 0)",
+                        "0 0 0 0 rgba(139, 92, 246, 0.7)"
+                      ]
+                    }}
+                    transition={{ repeat: Infinity, duration: 1 }}
+                  />
+                  <span className='text-[11px] sm:text-[14px]'>Active</span>
+                </motion.div>
+
+                {/* Profile Image with Animation */}
+                <motion.div
+                  className="w-20 h-20 sm:w-27 sm:h-27 rounded-full overflow-hidden bg-transparent shadow-xl mt-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -5, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                  <img
+                    src="images/profile-3.png"
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: 'center 10%' }}
+                  />
+                </motion.div>
+              </div>
+
+              {/* Profile Text with Animation */}
+              <div className="space-y-2">
+                <TextAnimate
+                  animation="blurIn"
+                  by="character"
+                  delay={0.2}
+                  once={true}  // Tambahkan ini agar animasi hanya sekali
+                  className="text-[16px] sm:text-[20px] md:text-[24px] font-bold text-[var(--text-primary)]"
+                >
+                  Mochamad Aldi Raihan Fachrizal
+                </TextAnimate>
+                <TextAnimate
+                  animation="blurIn"
+                  by="character"
+                  delay={0.3}
+                  once={true}  // Tambahkan ini
+                  className="text-[14px] sm:text-[16px] md:text-[18px] font-bold text-[var(--text-secondary)]"
+                >
+                  Im a Fullstack Developer.
+
+                </TextAnimate>
+                <TextAnimate
+                  animation="blurIn"
+                  by="character"
+                  delay={0.4}
+                  once={true}  // Tambahkan ini
+                  className="text-[12.5px] sm:text-[14px] md:text-[16px] text-[var(--text-secondary)]"
+                >
+                  I spend most of time thinking about Tea.
+                </TextAnimate>
+                <div className="text-[11.5px] sm:text-[12px] md:text-[14px] text-[var(--text-secondary)] flex items-center justify-center gap-1">
+                  <motion.div
+                    initial={{ opacity: 0, filter: 'blur(10px)' }}
+                    whileInView={{ opacity: 1, filter: 'blur(0px)' }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.45, duration: 0.5 }}
+                  >
+                    <FontAwesomeIcon icon={faLocationDot} className="text-[12px] sm:text-[12px] md:text-[14px]" />
+                  </motion.div>
+                  <TextAnimate
+                    animation="blurIn"
+                    by="character"
+                    delay={0.5}
+                    once={true}
+                  >
+                    Yogyakarta, Indonesia
+                  </TextAnimate>
+                </div>
+              </div>
+
+              {/* Social Icons with Animation */}
+              <motion.div
+                className="flex items-center gap-1 sm:gap-1 mt-4 sm:mt-1.5 text-[16px] sm:text-[16px] md:text-[18px] text-[var(--icon-color)]"
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      delayChildren: 0.5,
+                      staggerChildren: 0.1,
+                    },
+                  },
+                }}
               >
-                Yogyakarta, Indonesia
-              </TextAnimate>
+                {[
+                  { icon: <FontAwesomeIcon icon={faGithub} />, href: "#" },
+                  { icon: <FontAwesomeIcon icon={faYoutube} />, href: "#" },
+                  { icon: <FontAwesomeIcon icon={faLinkedin} />, href: "#" },
+                ].map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href={social.href}
+                    className="p-1 sm:p-1.5 border-[var(--icon-color)] hover:text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-colors"
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      show: { opacity: 1, y: 0 },
+                    }}
+                  >
+                    {social.icon}
+                  </motion.a>
+                ))}
+              </motion.div>
+
+              {/* FloatingDock Navigation - (moved) */}
             </div>
           </div>
 
-          {/* Social Icons with Animation */}
+          {/* Navigation Tabs and Content Section */}
           <motion.div
-            className="flex items-center gap-1 sm:gap-1 mt-4 sm:mt-1.5 text-[16px] sm:text-[16px] md:text-[18px] text-[var(--icon-color)]"
-            initial="hidden"
-            whileInView="show"
+            className="w-full max-w-7xl mx-auto px-2 pb-6 sm:mt-[-10rem] mt-[-6rem]"
+            initial={{ opacity: 0, y: 2, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  delayChildren: 0.5,
-                  staggerChildren: 0.1,
-                },
-              },
-            }}
+            transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
           >
-            {[
-              { icon: <FontAwesomeIcon icon={faGithub} />, href: "#" },
-              { icon: <FontAwesomeIcon icon={faYoutube} />, href: "#" },
-              { icon: <FontAwesomeIcon icon={faLinkedin} />, href: "#" },
-            ].map((social, index) => (
-              <motion.a
-                key={index}
-                href={social.href}
-                className="p-1 sm:p-1.5 border-[var(--icon-color)] hover:text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-colors"
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  show: { opacity: 1, y: 0 },
-                }}
-              >
-                {social.icon}
-              </motion.a>
-            ))}
+            <div ref={tabsRef} className={tabsStyles.tabs}>
+              {tabs.map((tab) =>
+                isDesktop ? (
+                  <MagneticGSAP
+                    key={tab.id}
+                    strength={0.5}
+                    range={200}
+                    duration={0.5}
+                  >
+                    <motion.button
+                      onClick={() => setActiveTab(tab.id)}
+                      data-active={activeTab === tab.id}
+                      className={tabsStyles.tabBtn}
+                      variants={{
+                        hidden: { opacity: 0, y: 20, scale: 0.8 },
+                        show: { opacity: 1, y: 0, scale: 1 },
+                      }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                    >
+                      {tab.label}
+                    </motion.button>
+                  </MagneticGSAP>
+                ) : (
+                  <motion.button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    data-active={activeTab === tab.id}
+                    className={tabsStyles.tabBtn}
+                    variants={{
+                      hidden: { opacity: 0, y: 20, scale: 0.8 },
+                      show: { opacity: 1, y: 0, scale: 1 },
+                    }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  >
+                    {tab.label}
+                  </motion.button>
+                )
+              )}
+            </div>
+
+            {/* Content Section */}
+            <div className="px-4 sm:px-6 mb-20 max-w-3xl mx-auto">
+              {getContentByTab()}
+            </div>
           </motion.div>
 
-          {/* FloatingDock Navigation - (moved) */}
-        </div>
-      </div>
-
-      {/* Navigation Tabs and Content Section */}
-      <motion.div
-        className="w-full max-w-7xl mx-auto px-2 pb-6 sm:mt-[-10rem] mt-[-6rem]"
-        initial={{ opacity: 0, y: 2, scale: 0.95 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
-      >
-        <div ref={tabsRef} className={tabsStyles.tabs}>
-          {tabs.map((tab) =>
-            isDesktop ? (
-              <MagneticGSAP
-                key={tab.id}
-                strength={0.5}
-                range={200}
-                duration={0.5}
+          {/* FloatingDock: only show when original tabs are not visible (scrolled out) */}
+          <AnimatePresence>
+            {!tabsVisible && (
+              <motion.div
+                key="floating-dock"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 18 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+                className="fixed left-0 right-0 md:bottom-8 bottom-6 z-[1200] flex md:justify-center justify-end pointer-events-none px-4"
               >
-                <motion.button
-                  onClick={() => setActiveTab(tab.id)}
-                  data-active={activeTab === tab.id}
-                  className={tabsStyles.tabBtn}
-                  variants={{
-                    hidden: { opacity: 0, y: 20, scale: 0.8 },
-                    show: { opacity: 1, y: 0, scale: 1 },
-                  }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                >
-                  {tab.label}
-                </motion.button>
-              </MagneticGSAP>
-            ) : (
-              <motion.button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                data-active={activeTab === tab.id}
-                className={tabsStyles.tabBtn}
-                variants={{
-                  hidden: { opacity: 0, y: 20, scale: 0.8 },
-                  show: { opacity: 1, y: 0, scale: 1 },
-                }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              >
-                {tab.label}
-              </motion.button>
-            )
-          )}
-        </div>
+                <motion.div className="pointer-events-auto" initial={{ scale: 0.98 }} animate={{ scale: 1 }} exit={{ scale: 0.98 }}>
+                  <FloatingDock
+                    items={
+                      // include theme toggle as first item when dock appears
+                      [
+                        {
+                          title: 'Theme',
+                          icon: isDarkMode ? (
+                            <Sun className="h-full w-full text-[var(--icon-color)]" />
+                          ) : (
+                            <Moon className="h-full w-full text-[var(--icon-color)]" />
+                          ),
+                          href: '#',
+                          onClick: async (event: React.MouseEvent<HTMLButtonElement>) => {
+                            // Use the clicked button element for ripple animation
+                            const buttonElement = event.currentTarget;
+                            const newDarkState = await toggleThemeWithRippleFromElement(
+                              buttonElement,
+                              setIsDarkMode
+                            );
+                            setIsDarkMode(newDarkState);
+                          },
+                        },
+                        ...dockItems.map(item => ({
+                          ...item,
+                          onClick: () => setActiveTab(item.title as TabId),
+                        })),
+                      ]
+                    }
+                  />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        {/* Content Section */}
-        <div className="px-4 sm:px-6 mb-20 max-w-3xl mx-auto">
-          {getContentByTab()}
-        </div>
-      </motion.div>
-
-      {/* FloatingDock: only show when original tabs are not visible (scrolled out) */}
-      <AnimatePresence>
-        {!tabsVisible && (
-          <motion.div
-            key="floating-dock"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 18 }}
-            transition={{ duration: 0.28, ease: "easeOut" }}
-            className="fixed left-0 right-0 md:bottom-8 bottom-6 z-[1200] flex md:justify-center justify-end pointer-events-none px-4"
-          >
-            <motion.div className="pointer-events-auto" initial={{ scale: 0.98 }} animate={{ scale: 1 }} exit={{ scale: 0.98 }}>
-              <FloatingDock
-                items={
-                  // include theme toggle as first item when dock appears
-                  [
-                    {
-                      title: 'Theme',
-                      icon: isDarkMode ? (
-                        <Sun className="h-full w-full text-[var(--icon-color)]" />
-                      ) : (
-                        <Moon className="h-full w-full text-[var(--icon-color)]" />
-                      ),
-                      href: '#',
-                      onClick: async (event: React.MouseEvent<HTMLButtonElement>) => {
-                        // Use the clicked button element for ripple animation
-                        const buttonElement = event.currentTarget;
-                        const newDarkState = await toggleThemeWithRippleFromElement(
-                          buttonElement,
-                          setIsDarkMode
-                        );
-                        setIsDarkMode(newDarkState);
-                      },
-                    },
-                    ...dockItems.map(item => ({
-                      ...item,
-                      onClick: () => setActiveTab(item.title as TabId),
-                    })),
-                  ]
-                }
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ProgressiveBlur fixed di bagian bawah halaman */}
-      <ProgressiveBlur
-        className="left-0 right-0 bottom-0 z-[1100] pointer-events-none"
-        height="120px"
-        position="bottom"
-        rootPosition="fixed"
-      />
-    </>
+          {/* ProgressiveBlur fixed di bagian bawah halaman */}
+          <ProgressiveBlur
+            className="left-0 right-0 bottom-0 z-[1100] pointer-events-none"
+            height="120px"
+            position="bottom"
+            rootPosition="fixed"
+          />
+        </>
+      )}
+    </main>
   );
 }
