@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client';
 
 import styles from './style.module.css';
@@ -24,9 +22,9 @@ export default function Index() {
         }, index === 0 ? 1000 : 150);
     }, [index]);
 
-    // Make curve responsive to screen size - use percentage of height instead of fixed 300px
-    const curveOffset = Math.min(300, dimension.height * 0.4); // Max 300px or 40% of screen height, whichever is smaller
-    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + curveOffset} 0 ${dimension.height} L0 0`;
+    // Make curve more pronounced on mobile - use responsive curve depth
+    const curveDepth = dimension.width <= 768 ? 400 : 300; // Deeper curve for mobile
+    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + curveDepth} 0 ${dimension.height} L0 0`;
     const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height} L0 0`;
 
     const curve: any = {

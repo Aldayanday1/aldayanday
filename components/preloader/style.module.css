@@ -12,7 +12,8 @@
         position: absolute;
         top: 0;
         width: 100%;
-        height: calc(100% + 300px);
+        height: calc(100% + 450px);
+        /* Increased height to accommodate deeper mobile curves */
 
         path {
             fill: #141516;
