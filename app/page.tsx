@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faYoutube, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { faLocationDot, faArrowRight } from '@fortawesome/free-solid-svg-icons';  // Tambahkan import ini
 import { TextAnimate } from "@/components/magicui/text-animate";
-import GradualBlur from '@/components/GradualBlur';
 import FullScreenModal from '@/components/FullScreenModal';
 import Credential from '@/components/project';
 import Modal from '@/components/modal';
@@ -25,6 +24,7 @@ import { IoPersonOutline, IoCodeSlashOutline } from "react-icons/io5";
 import { LiaProjectDiagramSolid } from "react-icons/lia";
 import { PiEnvelopeSimple, PiCertificate } from "react-icons/pi";
 import { toggleThemeWithRippleFromElement } from "@/lib/theme-utils";
+import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 
 // Define a type for tab IDs to ensure type safety
 type TabId = "About" | "Stack" | "Project" | "Credentials" | "Contact";
@@ -64,6 +64,14 @@ const dockItems = [
 ];
 
 export default function Home() {
+  const [initialMount, setInitialMount] = useState(true);
+
+  useEffect(() => {
+    // mark that initial mount has completed after a short tick so subsequent toggles are snappy
+    const t = window.setTimeout(() => setInitialMount(false), 600);
+    return () => window.clearTimeout(t);
+  }, []);
+
   const [activeTab, setActiveTab] = useState<TabId>("Project");
   const [tabsVisible, setTabsVisible] = useState(true);
   const tabsRef = useRef<HTMLDivElement | null>(null);
@@ -1044,11 +1052,20 @@ export default function Home() {
       )}
 
       {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
-      {tabsVisible && (
-        <div className="fixed top-4 right-4 z-50">
-          <AnimatedThemeToggler onToggle={setIsDarkMode} />
-        </div>
-      )}
+      <AnimatePresence>
+        {tabsVisible && (
+          <motion.div
+            key="top-theme-toggler"
+            initial={{ opacity: 0, y: -8, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.9 }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+            className="fixed top-4 right-4 z-50"
+          >
+            <AnimatedThemeToggler onToggle={setIsDarkMode} initialDelay={initialMount ? 0.4 : 0.12} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <div className="flex items-center justify-center w-full px-3 text-center sm:mt-0 mt-4" style={{ minHeight: "65vh" }}>
@@ -1246,7 +1263,6 @@ export default function Home() {
         </div>
       </motion.div>
 
-      {/* FloatingDock placed above the GradualBlur (bottom of page) */}
       {/* FloatingDock: only show when original tabs are not visible (scrolled out) */}
       <AnimatePresence>
         {!tabsVisible && (
@@ -1293,16 +1309,12 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* GradualBlur at the bottom of the page */}
-      <GradualBlur
-        target="page"
+      {/* ProgressiveBlur fixed di bagian bawah halaman */}
+      <ProgressiveBlur
+        className="left-0 right-0 bottom-0 z-[1100] pointer-events-none"
+        height="120px"
         position="bottom"
-        height="6rem"
-        strength={2}
-        divCount={5}
-        curve="bezier"
-        exponential={true}
-        opacity={1}
+        rootPosition="fixed"
       />
     </>
   );
