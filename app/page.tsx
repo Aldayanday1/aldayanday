@@ -181,6 +181,13 @@ export default function Home() {
     );
   };
 
+  // Close any open certificate dropdown when switching away from Credentials tab
+  useEffect(() => {
+    if (activeTab !== 'Credentials' && expandedCertificate !== null) {
+      setExpandedCertificate(null);
+    }
+  }, [activeTab]);
+
   // 1. About Me - Simple text information
   const renderAboutMe = () => (
     <motion.div
