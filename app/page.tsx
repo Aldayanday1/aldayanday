@@ -14,7 +14,6 @@ import Modal from '@/components/modal';
 import MagneticGSAP from "@/components/MagneticGSAP";
 import LogoLoop from '@/components/LogoLoop';
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
-import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import ExpandableCardDemo from "@/components/expandable-card-demo-standard"; // Import komponen expandable card
 import Silk from '@/components/Silk';
 import tabsStyles from "@/components/Tabs.module.css";
@@ -1158,27 +1157,27 @@ export default function Home() {
                 rotation={0}
               />
             </div>
-            )}
+          )}
 
-            {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
-            <AnimatePresence>
-              {tabsVisible && (
+          {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
+          <AnimatePresence>
+            {tabsVisible && (
               <motion.div
                 key="top-theme-toggler"
                 initial={{ opacity: 0, y: -8, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.9 }}
-              transition={{ duration: 0.28, ease: "easeOut" }}
-              className="fixed top-4 right-4 z-50 cursor-pointer"
-              // ensure the whole fixed area shows pointer and is clickable
-              style={{ touchAction: "manipulation" }}
-              role="button"
-              aria-label="Toggle theme"
+                exit={{ opacity: 0, y: -8, scale: 0.9 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+                className="fixed top-4 right-4 z-50 cursor-pointer"
+                // ensure the whole fixed area shows pointer and is clickable
+                style={{ touchAction: "manipulation" }}
+                role="button"
+                aria-label="Toggle theme"
               >
-              <AnimatedThemeToggler onToggle={setIsDarkMode} initialDelay={initialMount ? 0.4 : 0.12} />
+                <AnimatedThemeToggler onToggle={setIsDarkMode} initialDelay={initialMount ? 0.4 : 0.12} />
               </motion.div>
             )}
-            </AnimatePresence>
+          </AnimatePresence>
 
           {/* Hero Section */}
           <div className="flex items-center justify-center w-full px-3 text-center sm:mt-0 mt-4" style={{ minHeight: "65vh" }}>
