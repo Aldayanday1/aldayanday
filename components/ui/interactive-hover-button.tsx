@@ -38,15 +38,18 @@ export const InteractiveHoverButton = React.forwardRef<
           isDarkMode ? "bg-white" : "bg-black"
         )}></div>
 
-        {/* Animated badge for mobile only - white pulse */}
+        {/* Animated badge for mobile only - pulse color based on theme */}
         <motion.span
-          className="block sm:hidden w-2 h-2 rounded-full bg-white"
+          className={cn(
+            "block sm:hidden w-2 h-2 rounded-full",
+            isDarkMode ? "bg-white" : "bg-black"
+          )}
           animate={{
             opacity: [1, 0, 1],
             boxShadow: [
-              "0 0 0 0 rgba(255, 255, 255, 0.7)",
-              "0 0 0 6px rgba(255, 255, 255, 0)",
-              "0 0 0 0 rgba(255, 255, 255, 0.7)"
+              `0 0 0 0 ${isDarkMode ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)"}`,
+              `0 0 0 6px ${isDarkMode ? "rgba(255, 255, 255, 0)" : "rgba(0, 0, 0, 0)"}`,
+              `0 0 0 0 ${isDarkMode ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)"}`
             ]
           }}
           transition={{ repeat: Infinity, duration: 1 }}
