@@ -22,29 +22,31 @@ export default function Index() {
         }, index === 0 ? 1000 : 150);
     }, [index]);
 
-    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + 300} 0 ${dimension.height} L0 0`;
+    // Make curve responsive to screen size - use percentage of height instead of fixed 300px
+    const curveOffset = Math.min(300, dimension.height * 0.4); // Max 300px or 40% of screen height, whichever is smaller
+    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + curveOffset} 0 ${dimension.height} L0 0`;
     const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height} L0 0`;
 
-    const curve = {
-        initial: { d: initialPath },
-        exit: { d: targetPath }
+    const curve: any = {
+        initial: {
+            d: initialPath,
+            transition: { duration: 0.7, ease: [0.42, 0, 0.58, 1] }
+        },
+        exit: {
+            d: targetPath,
+            transition: { duration: 0.7, ease: [0.42, 0, 0.58, 1], delay: 0.3 }
+        }
     };
 
     return (
-        <motion.div
-            variants={slideUp}
-            initial="initial"
-            exit="exit"
-            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
-            className={styles.introduction}
-        >
+        <motion.div variants={slideUp as any} initial="initial" exit="exit" className={styles.introduction}>
             {dimension.width > 0 && (
                 <>
-                    <motion.p variants={opacity} initial="initial" animate="enter" transition={{ duration: 1, delay: 0.2 }}>
+                    <motion.p variants={opacity} initial="initial" animate="enter">
                         <span></span>{words[index]}
                     </motion.p>
                     <svg>
-                        <motion.path variants={curve} initial="initial" exit="exit" transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1], delay: 0.3 }}></motion.path>
+                        <motion.path variants={curve} initial="initial" exit="exit"></motion.path>
                     </svg>
                 </>
             )}

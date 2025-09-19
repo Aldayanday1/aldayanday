@@ -91,7 +91,7 @@ export default function FullScreenModal({ modal, certificates, onClose }: FullSc
 
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold transition-colors bg-black text-white hover:bg-gray-100 hover:text-black"
+                        className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold transition-colors bg-black text-white hover:bg-gray-100 hover:text-black cursor-pointer"
                         aria-label="Close modal"
                         style={{ zIndex: 3 }}
                     >

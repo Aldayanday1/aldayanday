@@ -265,17 +265,17 @@ export default function ExpandableCardDemo({
           />
 
           {/* Modal container */}
-          <div className="fixed inset-0 grid place-items-center z-[999999] [transform-style:preserve-3d] smooth-cursor-area">
+          <div className="fixed inset-0 grid place-items-center z-[999999] [transform-style:preserve-3d] ">
             {/* 3d-card wrapper for effects with expanded hover area */}
             <CardContainer
-              containerClassName="inter-var py-0 flex items-center justify-center smooth-cursor-area w-full h-full"
+              containerClassName="inter-var py-0 flex items-center justify-center  w-full h-full"
               expandedHoverArea={false}
               autoActivate={!isMobile}
               disableMouseHandlers={true}
             >
               <CardBody
                 ref={cardContainerRef}
-                className={`relative group/card smooth-cursor-area w-auto sm:w-[30rem] h-auto rounded-xl p-6 sm:p-6 border shadow-xl [transform-style:preserve-3d] [&>*]:[transform-style:preserve-3d] ${isDarkMode
+                className={`relative group/card  w-auto sm:w-[30rem] h-auto rounded-xl p-6 sm:p-6 border shadow-xl [transform-style:preserve-3d] [&>*]:[transform-style:preserve-3d] ${isDarkMode
                   ? 'bg-[var(--card-background)] border-[var(--card-border)]'
                   : 'bg-white border-gray-200'
                   } sm:mx-0 mx-4`}
@@ -291,8 +291,9 @@ export default function ExpandableCardDemo({
                     else setActive(null);
                   }}
                   className={`absolute top-3 right-3 project-card-close flex items-center justify-center rounded-full h-8 w-8 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} shadow-sm`}
-                  style={{ zIndex: 50, cursor: 'none' }}
+                  style={{ zIndex: 50, cursor: 'pointer' }}
                   aria-hidden={false}
+                  aria-label="Close"
                 >
                   <CloseIcon />
                 </motion.button>
@@ -317,7 +318,7 @@ export default function ExpandableCardDemo({
                     y: 8
                   }}
                   transition={{ duration: 0.28 }}
-                  className="project-card smooth-cursor-area sm:max-h-none max-h-[80vh] sm:overflow-visible overflow-auto"
+                  className="project-cardsm:max-h-none max-h-[80vh] sm:overflow-visible overflow-auto"
                   style={{
                     backgroundColor: isDarkMode ? 'var(--card-background)' : 'white'
                   }}
@@ -437,7 +438,6 @@ export const CloseIcon = () => (
     animate={{ opacity: 1 }}
     exit={{ opacity: 0, transition: { duration: 0.05 } }}
     className="inline-flex items-center justify-center h-4 w-4"
-    style={{ cursor: 'none' }}
   >
     <AiOutlineClose className="h-4 w-4" aria-hidden />
   </motion.span>

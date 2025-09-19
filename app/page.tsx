@@ -15,7 +15,6 @@ import MagneticGSAP from "@/components/MagneticGSAP";
 import LogoLoop from '@/components/LogoLoop';
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
-import { CometCard } from "@/components/ui/comet-card"; // added import
 import ExpandableCardDemo from "@/components/expandable-card-demo-standard"; // Import komponen expandable card
 import Silk from '@/components/Silk';
 import tabsStyles from "@/components/Tabs.module.css";
@@ -108,23 +107,6 @@ export default function Home() {
       }
     };
   }, []);
-
-  const handleCardMouseEnter = () => {
-    if (hoverTimeout.current) {
-      window.clearTimeout(hoverTimeout.current);
-      hoverTimeout.current = null;
-    }
-    setCursorActive(true);
-  };
-
-  const handleCardMouseLeave = () => {
-    if (hoverTimeout.current) window.clearTimeout(hoverTimeout.current);
-    // delay unmount so quick moves between cards don't unmount the cursor
-    hoverTimeout.current = window.setTimeout(() => {
-      setCursorActive(false);
-      hoverTimeout.current = null;
-    }, 250); // 250ms debounce — adjust as needed (200-400ms recommended)
-  };
 
   // Define a type for tab IDs to ensure type safety
   type TabId = "About" | "Stack" | "Project" | "Credentials" | "Contact";
@@ -438,7 +420,7 @@ export default function Home() {
     >
       <div className="w-full max-w-2xl mx-auto space-y-15">
         {/* Nonaktifkan SmoothCursor di mobile (< 640px) */}
-        {cursorActive && isDesktop && <SmoothCursor />}
+        {/* {cursorActive && isDesktop && <SmoothCursor />} */}
 
         {projects.map((item, index) => (
           <motion.div
@@ -452,15 +434,9 @@ export default function Home() {
             <div key={item.id ?? index} className="relative">
               {/* Nonaktifkan CometCard di mobile (< 640px) */}
               {isDesktop ? (
-                <CometCard
-                  rotateDepth={17.5}
-                  translateDepth={20}
-                  className="-mb-6"
-                >
+                <div className="-mb-6">
                   <article
                     className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative project-card py-[6px]"
-                    onMouseEnter={handleCardMouseEnter}
-                    onMouseLeave={handleCardMouseLeave}
                     style={{
                       boxShadow: isDarkMode
                         ? "0 8px 24px rgba(2,6,23,0.12)"
@@ -596,7 +572,7 @@ export default function Home() {
                                   ? 'hover:bg-white hover:text-black hover:border-black'
                                   : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
                                 } 
-                            transition-colors duration-150 group`}
+                            transition-colors duration-150 group cursor-pointer`}
                               onClick={() => setExpandCardIndex(index)}
                             >
                               <span className="leading-none text-[11px] sm:text-[12px] font-semibold">{item.buttonText}</span>
@@ -683,13 +659,11 @@ export default function Home() {
                       )}
                     </div>
                   </article>
-                </CometCard>
+                </div>
               ) : (
                 <div className="-mb-10">
                   <article
                     className="w-full bg-[var(--card-background)] rounded-[10px] overflow-hidden transition-all duration-300 relative project-card py-[6px]"
-                    onMouseEnter={handleCardMouseEnter}
-                    onMouseLeave={handleCardMouseLeave}
                     style={{
                       boxShadow: isDarkMode
                         ? "0 8px 24px rgba(2,6,23,0.12)"
@@ -927,8 +901,6 @@ export default function Home() {
                   >
                     <ExpandableCardDemo
                       card={projectDetails[index]}
-                      onHoverEnter={handleCardMouseEnter}
-                      onHoverLeave={handleCardMouseLeave}
                       onClose={() => {
                         setExpandCardIndex(null);
                         setCursorActive(false);
@@ -1186,23 +1158,27 @@ export default function Home() {
                 rotation={0}
               />
             </div>
-          )}
+            )}
 
-          {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
-          <AnimatePresence>
-            {tabsVisible && (
+            {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
+            <AnimatePresence>
+              {tabsVisible && (
               <motion.div
                 key="top-theme-toggler"
                 initial={{ opacity: 0, y: -8, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.9 }}
-                transition={{ duration: 0.28, ease: "easeOut" }}
-                className="fixed top-4 right-4 z-50"
+              exit={{ opacity: 0, y: -8, scale: 0.9 }}
+              transition={{ duration: 0.28, ease: "easeOut" }}
+              className="fixed top-4 right-4 z-50 cursor-pointer"
+              // ensure the whole fixed area shows pointer and is clickable
+              style={{ touchAction: "manipulation" }}
+              role="button"
+              aria-label="Toggle theme"
               >
-                <AnimatedThemeToggler onToggle={setIsDarkMode} initialDelay={initialMount ? 0.4 : 0.12} />
+              <AnimatedThemeToggler onToggle={setIsDarkMode} initialDelay={initialMount ? 0.4 : 0.12} />
               </motion.div>
             )}
-          </AnimatePresence>
+            </AnimatePresence>
 
           {/* Hero Section */}
           <div className="flex items-center justify-center w-full px-3 text-center sm:mt-0 mt-4" style={{ minHeight: "65vh" }}>
