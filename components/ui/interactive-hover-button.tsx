@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface InteractiveHoverButtonProps
@@ -31,11 +32,25 @@ export const InteractiveHoverButton = React.forwardRef<
 
       {/* Content container */}
       <div className="relative z-10 flex items-center gap-2">
-        {/* Titik yang mengecil saat hover */}
+        {/* Titik yang mengecil saat hover (desktop) */}
         <div className={cn(
-          "h-2 w-2 rounded-full transition-all duration-300 group-hover:scale-0",
+          "hidden sm:block h-2 w-2 rounded-full transition-all duration-300 group-hover:scale-0",
           isDarkMode ? "bg-white" : "bg-black"
         )}></div>
+
+        {/* Animated badge for mobile only - white pulse */}
+        <motion.span
+          className="block sm:hidden w-2 h-2 rounded-full bg-white"
+          animate={{
+            opacity: [1, 0, 1],
+            boxShadow: [
+              "0 0 0 0 rgba(255, 255, 255, 0.7)",
+              "0 0 0 6px rgba(255, 255, 255, 0)",
+              "0 0 0 0 rgba(255, 255, 255, 0.7)"
+            ]
+          }}
+          transition={{ repeat: Infinity, duration: 1 }}
+        />
 
         {/* Teks yang slide ke kanan dan fade out saat hover */}
         <span className="inline-block transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0">
