@@ -81,6 +81,8 @@ export default function Home() {
   const [cursorActive, setCursorActive] = useState(false);
   const [expandCardIndex, setExpandCardIndex] = useState<number | null>(null);
   const [expandedCertificate, setExpandedCertificate] = useState<number | null>(null);
+  const contentRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const [contentHeights, setContentHeights] = useState<Record<number, number>>({});
 
   useEffect(() => {
     const checkTheme = () => {
@@ -932,6 +934,56 @@ export default function Home() {
     { title: "Cisco Network & Cybersecurity", src: "certif_cyber.jpg", color: "#4A4A4A" }, // Abu terang
   ]
 
+  // Preload certificate images to avoid first-open delay
+  useEffect(() => {
+    const imgs: HTMLImageElement[] = [];
+    certificate.forEach((c) => {
+      const img = new Image();
+      img.src = `/images/${c.src}`;
+      imgs.push(img);
+    });
+
+    return () => {
+      // Allow GC by clearing src
+      imgs.forEach((i) => (i.src = ""));
+    };
+  }, []);
+
+  // measure content heights for each certificate after images load
+  useEffect(() => {
+    const updateHeights = () => {
+      const newHeights: Record<number, number> = {};
+      Object.keys(contentRefs.current).forEach((k) => {
+        const idx = Number(k);
+        const el = contentRefs.current[idx];
+        if (el) newHeights[idx] = el.scrollHeight;
+      });
+      setContentHeights(newHeights);
+    };
+
+    // initial measure (in case images were cached)
+    updateHeights();
+
+    // re-measure when window resizes or images finish loading
+    window.addEventListener('resize', updateHeights);
+    // also set up listeners on images inside the refs
+    const listeners: Array<() => void> = [];
+    Object.values(contentRefs.current).forEach((el) => {
+      if (!el) return;
+      const imgs = Array.from(el.getElementsByTagName('img')) as HTMLImageElement[];
+      imgs.forEach((img) => {
+        const handler = () => updateHeights();
+        img.addEventListener('load', handler);
+        listeners.push(() => img.removeEventListener('load', handler));
+      });
+    });
+
+    return () => {
+      window.removeEventListener('resize', updateHeights);
+      listeners.forEach((f) => f());
+    };
+  }, [certificate]);
+
   const renderCredentials = () => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -973,23 +1025,32 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Dropdown Image */}
+                {/* Dropdown Image - smoother: use transform scaleY to avoid layout reflow and add will-change */}
                 <AnimatePresence>
                   {expandedCertificate === index && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
+                      animate={{ height: contentHeights[index] ?? 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden bg-[var(--card-background)] border-t border-[var(--card-border)]"
+                      transition={{ duration: 0.45, ease: 'easeInOut' }}
+                      style={{ overflow: 'hidden' }}
+                      className="bg-[var(--card-background)] border-t border-[var(--card-border)]"
                     >
-                      <div className="p-4">
+                      <motion.div
+                        ref={(el) => { contentRefs.current[index] = el; }}
+                        initial={{ scaleY: 0 }}
+                        animate={{ scaleY: 1 }}
+                        exit={{ scaleY: 0 }}
+                        transition={{ duration: 0.45, ease: 'easeInOut' }}
+                        style={{ transformOrigin: 'top' }}
+                        className="p-4 min-h-[160px] flex items-center justify-center will-change-transform"
+                      >
                         <img
                           src={`/images/${certificate.src}`}
                           alt={certificate.title}
-                          className="w-full h-auto max-h-96 object-contain rounded-lg shadow-lg"
+                          className="w-full h-auto max-h-96 object-contain rounded-lg shadow-lg transition-all duration-300"
                         />
-                      </div>
+                      </motion.div>
                     </motion.div>
                   )}
                 </AnimatePresence>
