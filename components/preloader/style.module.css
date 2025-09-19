@@ -5,15 +5,25 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-    z-index: 99;
+    z-index: 9999;
+    /* Increased z-index for mobile browsers */
     background-color: #141516;
+    overflow: hidden;
+    /* Prevent any scroll issues on mobile */
 
     svg {
         position: absolute;
         top: 0;
+        left: 0;
         width: 100%;
-        height: calc(100% + 450px);
-        /* Increased height to accommodate deeper mobile curves */
+        height: calc(100vh + 500px);
+        /* Use vh for mobile consistency */
+        z-index: 10;
+        /* Ensure SVG is above background */
+        overflow: visible;
+        /* Allow curve to extend beyond viewport */
+        pointer-events: none;
+        /* Prevent any interaction issues */
 
         path {
             fill: #141516;
@@ -26,7 +36,8 @@
         font-size: 42px;
         align-items: center;
         position: absolute;
-        z-index: 1;
+        z-index: 20;
+        /* Higher z-index than SVG */
 
         span {
             display: block;
@@ -36,5 +47,23 @@
             border-radius: 50%;
             margin-right: 10px;
         }
+    }
+}
+
+/* Mobile specific fixes */
+@media (max-width: 640px) {
+    .introduction {
+        /* Ensure proper rendering on mobile */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .introduction svg {
+        /* Force hardware acceleration on mobile */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        will-change: transform;
     }
 }

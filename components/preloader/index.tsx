@@ -25,7 +25,7 @@ export default function Index() {
     }, [index]);
 
     // Make curve more pronounced on mobile - use responsive curve depth
-    const curveDepth = dimension.width <= 768 ? 400 : 300; // Deeper curve for mobile
+    const curveDepth = dimension.width <= 768 ? 500 : 300; // Even deeper curve for mobile
     const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + curveDepth} 0 ${dimension.height} L0 0`;
     const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height} L0 0`;
 
@@ -36,7 +36,7 @@ export default function Index() {
         },
         exit: {
             d: targetPath,
-            transition: { duration: 0.7, ease: [0.42, 0, 0.58, 1], delay: 0.3 }
+            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.3 } // Slightly longer duration for smoother mobile animation
         }
     };
 
