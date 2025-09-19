@@ -80,6 +80,7 @@ export default function Home() {
   const [fullScreenModal, setFullScreenModal] = useState({ active: false, index: 0 })
   const [cursorActive, setCursorActive] = useState(false);
   const [expandCardIndex, setExpandCardIndex] = useState<number | null>(null);
+  const [expandedCertificate, setExpandedCertificate] = useState<number | null>(null);
 
   useEffect(() => {
     const checkTheme = () => {
@@ -921,7 +922,7 @@ export default function Home() {
   );
 
 
-  // 4. Credentials - Keep existing 
+  // 4. Credentials
 
   // data-certificate
   const certificate = [
@@ -946,21 +947,69 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
             >
-              <Credential
-                index={index}
-                title={certificate.title}
-                setModal={setModal}
-                setFullScreenModal={setFullScreenModal}
-              />
+              {/* Desktop Layout - sama seperti sebelumnya */}
+              <div className="hidden sm:block">
+                <Credential
+                  index={index}
+                  title={certificate.title}
+                  setModal={setModal}
+                  setFullScreenModal={setFullScreenModal}
+                />
+              </div>
+
+              {/* Mobile Layout - dropdown dengan + icon */}
+              <div className="block sm:hidden">
+                <div
+                  className="flex justify-between items-center py-4 px-4 border-t border-[var(--card-border)] cursor-pointer hover:bg-[var(--card-background)] transition-colors"
+                  onClick={() => setExpandedCertificate(expandedCertificate === index ? null : index)}
+                >
+                  <div>
+                    <h2 className="text-lg font-medium text-[var(--text-primary)]">{certificate.title}</h2>
+                    <p className="text-sm text-[var(--text-secondary)]">Certificate</p>
+                  </div>
+                  <div className="text-xl text-[var(--text-primary)] transition-transform duration-200"
+                    style={{ transform: expandedCertificate === index ? 'rotate(45deg)' : 'rotate(0deg)' }}>
+                    +
+                  </div>
+                </div>
+
+                {/* Dropdown Image */}
+                <AnimatePresence>
+                  {expandedCertificate === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden bg-[var(--card-background)] border-t border-[var(--card-border)]"
+                    >
+                      <div className="p-4">
+                        <img
+                          src={`/images/${certificate.src}`}
+                          alt={certificate.title}
+                          className="w-full h-auto max-h-96 object-contain rounded-lg shadow-lg"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </motion.div>
           ))}
+
+          {/* Border bottom untuk mobile */}
+          <div className="block sm:hidden border-b border-[var(--card-border)]"></div>
         </div>
-        <Modal modal={modal} certificates={certificate} />
-        <FullScreenModal
-          modal={fullScreenModal}
-          certificates={certificate}
-          onClose={() => setFullScreenModal({ active: false, index: 0 })}
-        />
+
+        {/* Modal hanya untuk desktop */}
+        <div className="hidden sm:block">
+          <Modal modal={modal} certificates={certificate} />
+          <FullScreenModal
+            modal={fullScreenModal}
+            certificates={certificate}
+            onClose={() => setFullScreenModal({ active: false, index: 0 })}
+          />
+        </div>
       </main>
     </motion.div>
   );
