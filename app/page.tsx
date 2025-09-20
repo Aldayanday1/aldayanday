@@ -1142,7 +1142,7 @@ export default function Home() {
       {!isLoading && (
         <>
           {/* Silk background dengan class CSS yang stabil */}
-          {isDarkMode && (
+          {/* {isDarkMode && (
             <div className="silk-background" style={{
               position: 'fixed',
               inset: 0,
@@ -1157,7 +1157,7 @@ export default function Home() {
                 rotation={0}
               />
             </div>
-          )}
+          )} */}
 
           {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
           <AnimatePresence>
