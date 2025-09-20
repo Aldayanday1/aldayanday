@@ -1074,7 +1074,7 @@ export default function Home() {
   // 5. Contact 
   const renderContact = () => {
     const contacts = [
-      { name: "WhatsApp", handle: "+62 812-3456-7890", icon: <FaWhatsapp className="text-[var(--icon-color)]" />, link: "https://wa.me/6281234567890" },
+      { name: "WhatsApp", handle: "+62 851-8454-1785", icon: <FaWhatsapp className="text-[var(--icon-color)]" />, link: "https://wa.me/6281234567890" },
       { name: "Gmail", handle: "Onlymarfa69@gmail.com", icon: <HiOutlineEnvelope className="text-[var(--icon-color)]" />, link: "mailto:Onlymarfa69@gmail.com" },
       { name: "LinkedIn", handle: "Aldi Raihan", icon: <FaLinkedinIn className="text-[var(--icon-color)]" />, link: "https://linkedin.com/in/your-linkedin" },
       { name: "GitHub", handle: "Aldayanday1", icon: <FaGithub className="text-[var(--icon-color)]" />, link: "https://github.com/your-github" },
@@ -1102,17 +1102,24 @@ export default function Home() {
                   href={contact.link}
                   target={contact.link.startsWith('mailto:') ? '_self' : '_blank'}
                   rel={contact.link.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
-                  className="flex sm:justify-center justify-start items-center gap-3 py-2 pl-[14px] rounded-lg hover:bg-[var(--card-background)] transition-colors duration-200 group"
+                  className="flex sm:justify-center justify-start items-center gap-3 py-3 pl-[17px] sm:pl-0 group"
                   aria-label={`Contact via ${contact.name}`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-[15px] flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                    <span className="text-[15px] sm:text-[18px] flex-shrink-0 w-6 h-6 flex items-center justify-center pointer-events-none">
                       {contact.icon}
                     </span>
-                    <span className="text-[14px] font-semibold text-[var(--text-primary)] group-hover:text-[var(--text-primary)]">
+
+                    <span
+                      className="text-[14px] sm:text-[15px] font-semibold text-[var(--text-primary)] transition-transform duration-200 ease-out transform-gpu will-change-transform group-hover:translate-x-1 group-hover:scale-105"
+                    >
                       {contact.name}
                     </span>
-                    <span className="text-[12.5px] text-[var(--text-secondary)] opacity-60 truncate">
+
+                    <span
+                      className="text-[12.5px] sm:text-[15px] text-[var(--text-secondary)] opacity-60 truncate transition-transform duration-200 ease-out transform-gpu will-change-transform group-hover:translate-x-1 group-hover:opacity-90"
+                      style={{ transformOrigin: 'left' }}
+                    >
                       {contact.handle}
                     </span>
                   </div>
@@ -1120,6 +1127,16 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
+            className="text-center mt-8"
+          >
+            <p className="text-[var(--text-secondary)] text-[11px] sm:text-[13px]">
+              Great opportunities start with a small conversation. Let’s talk!
+            </p>
+          </motion.div>
         </div>
       </motion.div>
     );
