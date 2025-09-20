@@ -1102,7 +1102,7 @@ export default function Home() {
                   href={contact.link}
                   target={contact.link.startsWith('mailto:') ? '_self' : '_blank'}
                   rel={contact.link.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
-                  className="flex sm:justify-center justify-start items-center gap-3 py-3 pl-[17px] sm:pl-0 group"
+                  className="flex sm:justify-center justify-center items-center gap-3 py-3 group"
                   aria-label={`Contact via ${contact.name}`}
                 >
                   <div className="flex items-center gap-2">
@@ -1131,11 +1131,18 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.3 }}
-            className="text-center mt-8"
+            className="text-center sm:mt-7.5 mt-6"
           >
-            <p className="text-[var(--text-secondary)] text-[11px] sm:text-[13px]">
-              Great opportunities start with a small conversation. Let’s talk!
+            <p className="text-[var(--text-secondary)] text-[12px] sm:text-[15px] leading-snug py-[1.2px]">
+              Great opportunities...
             </p>
+            <p className="text-[var(--text-secondary)] text-[12px] sm:text-[15px] leading-snug py-[1.2px] pb-7">
+              ...start with a small conversation.
+            </p>
+            <p
+              className="text-[var(--text-secondary)] text-[40px] sm:text-[45px] font-semibold leading-snug mt-[1.2px] py-[0.5px]"
+              style={{ fontFamily: "'Caveat', cursive" }}
+            >Let's Talk!</p>
           </motion.div>
         </div>
       </motion.div>
