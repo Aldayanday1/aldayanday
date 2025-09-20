@@ -28,6 +28,7 @@ import { PiEnvelopeSimple, PiCertificate } from "react-icons/pi";
 import { toggleThemeWithRippleFromElement } from "@/lib/theme-utils";
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 import Preloader from '@/components/preloader';
+import ScrollReveal from '@/components/ScrollReveal';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -187,51 +188,18 @@ export default function Home() {
     }
   }, [activeTab]);
 
-  // 1. About Me - Simple text information
+  // 1. About Me - ScrollReveal animated text
   const renderAboutMe = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.05 }}
+    <ScrollReveal
+      baseOpacity={0}
+      enableBlur={true}
+      baseRotation={5}
+      blurStrength={10}
+      containerClassName="w-full max-w-7xl mx-auto px-2 sm:px-4 mb-8"
+      textClassName="text-[13px] sm:text-[34px] leading-relaxed"
     >
-      <div className="w-full max-w-2xl mx-auto bg-[var(--card-background)] border border-[var(--card-border)] rounded-2xl p-8 shadow-lg">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-2xl mx-auto mb-6">
-            👨‍💻
-          </div>
-          <motion.h2
-            className="text-2xl font-bold text-[var(--text-primary)] mb-4"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            About Me
-          </motion.h2>
-          <motion.div
-            className="space-y-3 text-left"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.15 }}
-          >
-            <p className="text-[var(--text-primary)] leading-relaxed">
-              <strong>Mochamad Aldi Raihan Fachrizal</strong>
-            </p>
-            <p className="text-[var(--text-secondary)] leading-relaxed">
-              Fresh Graduate dari Program Studi Teknik Informatika, Universitas Muhammadiyah Yogyakarta Angkatan 2021 dengan IPK 3.6.
-            </p>
-            <p className="text-[var(--text-secondary)] leading-relaxed">
-              Spesialis dalam pengembangan aplikasi <strong>Fullstack Development</strong> dengan pengalaman dalam membangun aplikasi web modern menggunakan teknologi terkini.
-            </p>
-            <p className="text-[var(--text-secondary)] leading-relaxed">
-              Passionate dalam menciptakan solusi digital yang inovatif dan user-friendly. Selalu antusias untuk belajar teknologi baru dan menghadapi tantangan dalam dunia programming.
-            </p>
-            <p className="text-[var(--text-secondary)] leading-relaxed">
-              Memiliki kemampuan bekerja dalam tim, komunikasi yang baik, dan mindset problem-solving yang kuat.
-            </p>
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
+      About Me - Mochamad Aldi Raihan Fachrizal Fresh Graduate dari Program Studi Teknik Informatika, Universitas Muhammadiyah Yogyakarta Angkatan 2021 dengan IPK 3.6. Spesialis dalam pengembangan aplikasi Fullstack Development dengan pengalaman dalam membangun aplikasi web modern menggunakan teknologi terkini. Passionate dalam menciptakan solusi digital yang inovatif dan user-friendly. Selalu antusias untuk belajar teknologi baru dan menghadapi tantangan dalam dunia programming. Memiliki kemampuan bekerja dalam tim, komunikasi yang baik, dan mindset problem-solving yang kuat.
+    </ScrollReveal>
   );
 
   // 2. Stack - Minimalist skill boxes
@@ -1142,7 +1110,7 @@ export default function Home() {
             <p
               className="text-[var(--text-secondary)] text-[40px] sm:text-[45px] font-semibold leading-snug mt-[1.2px] py-[0.5px]"
               style={{ fontFamily: "'Caveat', cursive" }}
-            >Let's Talk!</p>
+            >Let&apos;s Talk!</p>
           </motion.div>
         </div>
       </motion.div>
