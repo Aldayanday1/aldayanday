@@ -11,9 +11,13 @@ import { TextAnimate } from "@/components/magicui/text-animate";
 import FullScreenModal from '@/components/FullScreenModal';
 import Credential from '@/components/project';
 import Modal from '@/components/modal';
-import MagneticGSAP from "@/components/MagneticGSAP";
+// MagneticGSAP removed from tabs — using plain buttons for consistent behavior
 import LogoLoop from '@/components/LogoLoop';
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
+import { FaWhatsapp, FaEnvelope, FaLinkedinIn, FaGithub, FaInstagram, FaTelegram } from 'react-icons/fa';
+import { HiOutlineEnvelope } from "react-icons/hi2";
+import { CiLinkedin } from "react-icons/ci";
+import { PiTelegramLogo } from "react-icons/pi";
 import ExpandableCardDemo from "@/components/expandable-card-demo-standard"; // Import komponen expandable card
 import Silk from '@/components/Silk';
 import tabsStyles from "@/components/Tabs.module.css";
@@ -1067,15 +1071,15 @@ export default function Home() {
     </motion.div>
   );
 
-  // 5. Contact - removed framer-motion animations (static anchors)
+  // 5. Contact 
   const renderContact = () => {
     const contacts = [
-      { name: "WhatsApp", icon: "📱", color: "from-green-500 to-green-600", link: "https://wa.me/your-number" },
-      { name: "Gmail", icon: "📧", color: "from-red-500 to-red-600", link: "mailto:your-email@gmail.com" },
-      { name: "LinkedIn", icon: "💼", color: "from-blue-600 to-blue-700", link: "https://linkedin.com/in/your-profile" },
-      { name: "GitHub", icon: "🐙", color: "from-gray-700 to-gray-900", link: "https://github.com/your-username" },
-      { name: "Instagram", icon: "📸", color: "from-pink-500 to-purple-600", link: "https://instagram.com/your-username" },
-      { name: "Telegram", icon: "✈️", color: "from-blue-400 to-blue-500", link: "https://t.me/your-username" }
+      { name: "WhatsApp", handle: "+62 812-3456-7890", icon: <FaWhatsapp className="text-[var(--icon-color)]" />, link: "https://wa.me/6281234567890" },
+      { name: "Gmail", handle: "Onlymarfa69@gmail.com", icon: <HiOutlineEnvelope className="text-[var(--icon-color)]" />, link: "mailto:Onlymarfa69@gmail.com" },
+      { name: "LinkedIn", handle: "Aldi Raihan", icon: <FaLinkedinIn className="text-[var(--icon-color)]" />, link: "https://linkedin.com/in/your-linkedin" },
+      { name: "GitHub", handle: "Aldayanday1", icon: <FaGithub className="text-[var(--icon-color)]" />, link: "https://github.com/your-github" },
+      { name: "Instagram", handle: "@youw4nabe", icon: <FaInstagram className="text-[var(--icon-color)]" />, link: "https://instagram.com/your_ig" },
+      { name: "Telegram", handle: "@aldayanday1", icon: <PiTelegramLogo className="text-[var(--icon-color)]" />, link: "https://t.me/your_telegram" },
     ];
 
     return (
@@ -1083,50 +1087,39 @@ export default function Home() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.05 }}
+        className="mt-[-0.95rem]"
       >
-        <div className="w-full max-w-2xl mx-auto space-y-6">
-          <motion.div
-            className="text-center mb-8"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Get In Touch</h2>
-            <p className="text-[var(--text-secondary)]">Let&apos;s connect and work together</p>
-          </motion.div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="w-full max-w-2xl mx-auto">
+          <div className="space-y-1">
             {contacts.map((contact, index) => (
-              <motion.a
+              <motion.div
                 key={contact.name}
-                href={contact.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.03 + 0.15, duration: 0.2 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl p-4 hover:shadow-lg transition-all duration-300 group text-center"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 + 0.15, duration: 0.3 }}
               >
-                <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${contact.color} flex items-center justify-center text-xl mx-auto mb-3 group-hover:scale-110 transition-transform`}>
-                  {contact.icon}
-                </div>
-                <h3 className="font-semibold text-[var(--text-primary)] text-sm group-hover:text-[var(--text-primary)]">
-                  {contact.name}
-                </h3>
-              </motion.a>
+                <a
+                  href={contact.link}
+                  target={contact.link.startsWith('mailto:') ? '_self' : '_blank'}
+                  rel={contact.link.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                  className="flex sm:justify-center justify-start items-center gap-3 py-2 pl-[14px] rounded-lg hover:bg-[var(--card-background)] transition-colors duration-200 group"
+                  aria-label={`Contact via ${contact.name}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-[15px] flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                      {contact.icon}
+                    </span>
+                    <span className="text-[14px] font-semibold text-[var(--text-primary)] group-hover:text-[var(--text-primary)]">
+                      {contact.name}
+                    </span>
+                    <span className="text-[12.5px] text-[var(--text-secondary)] opacity-60 truncate">
+                      {contact.handle}
+                    </span>
+                  </div>
+                </a>
+              </motion.div>
             ))}
           </div>
-          <motion.div
-            className="text-center mt-8 p-6 bg-[var(--card-background)] border border-[var(--card-border)] rounded-xl"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
-              I&apos;m always open to discussing new opportunities, collaborations, or just having a friendly chat about technology and development.
-            </p>
-          </motion.div>
         </div>
       </motion.div>
     );
@@ -1142,7 +1135,7 @@ export default function Home() {
       {!isLoading && (
         <>
           {/* Silk background dengan class CSS yang stabil */}
-          {/* {isDarkMode && (
+          {isDarkMode && (
             <div className="silk-background" style={{
               position: 'fixed',
               inset: 0,
@@ -1157,7 +1150,7 @@ export default function Home() {
                 rotation={0}
               />
             </div>
-          )} */}
+          )}
 
           {/* Theme toggler - hide when FloatingDock is visible (improves UX) */}
           <AnimatePresence>
@@ -1330,43 +1323,21 @@ export default function Home() {
             transition={{ delay: 0.4, duration: 0.5, stiffness: 100 }}
           >
             <div ref={tabsRef} className={tabsStyles.tabs}>
-              {tabs.map((tab) =>
-                isDesktop ? (
-                  <MagneticGSAP
-                    key={tab.id}
-                    strength={0.5}
-                    range={200}
-                    duration={0.5}
-                  >
-                    <motion.button
-                      onClick={() => setActiveTab(tab.id)}
-                      data-active={activeTab === tab.id}
-                      className={tabsStyles.tabBtn}
-                      variants={{
-                        hidden: { opacity: 0, y: 20, scale: 0.8 },
-                        show: { opacity: 1, y: 0, scale: 1 },
-                      }}
-                      transition={{ duration: 0.6, ease: "easeOut" }}
-                    >
-                      {tab.label}
-                    </motion.button>
-                  </MagneticGSAP>
-                ) : (
-                  <motion.button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    data-active={activeTab === tab.id}
-                    className={tabsStyles.tabBtn}
-                    variants={{
-                      hidden: { opacity: 0, y: 20, scale: 0.8 },
-                      show: { opacity: 1, y: 0, scale: 1 },
-                    }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                  >
-                    {tab.label}
-                  </motion.button>
-                )
-              )}
+              {tabs.map((tab) => (
+                <motion.button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  data-active={activeTab === tab.id}
+                  className={tabsStyles.tabBtn}
+                  variants={{
+                    hidden: { opacity: 0, y: 20, scale: 0.8 },
+                    show: { opacity: 1, y: 0, scale: 1 },
+                  }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                >
+                  {tab.label}
+                </motion.button>
+              ))}
             </div>
 
             {/* Content Section */}

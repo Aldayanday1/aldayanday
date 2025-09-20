@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client';
 
 import styles from './style.module.css';
@@ -24,31 +22,29 @@ export default function Index() {
         }, index === 0 ? 1000 : 150);
     }, [index]);
 
-    // Make curve more pronounced on mobile - use responsive curve depth
-    const curveDepth = dimension.width <= 768 ? 500 : 300; // Even deeper curve for mobile
-    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + curveDepth} 0 ${dimension.height} L0 0`;
+    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + 300} 0 ${dimension.height} L0 0`;
     const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height} L0 0`;
 
-    const curve: any = {
-        initial: {
-            d: initialPath,
-            transition: { duration: 0.7, ease: [0.42, 0, 0.58, 1] }
-        },
-        exit: {
-            d: targetPath,
-            transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.3 } // Slightly longer duration for smoother mobile animation
-        }
+    const curve = {
+        initial: { d: initialPath },
+        exit: { d: targetPath }
     };
 
     return (
-        <motion.div variants={slideUp as any} initial="initial" exit="exit" className={styles.introduction}>
+        <motion.div
+            variants={slideUp}
+            initial="initial"
+            exit="exit"
+            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
+            className={styles.introduction}
+        >
             {dimension.width > 0 && (
                 <>
-                    <motion.p variants={opacity} initial="initial" animate="enter">
+                    <motion.p variants={opacity} initial="initial" animate="enter" transition={{ duration: 1, delay: 0.2 }}>
                         <span></span>{words[index]}
                     </motion.p>
                     <svg>
-                        <motion.path variants={curve} initial="initial" exit="exit"></motion.path>
+                        <motion.path variants={curve} initial="initial" exit="exit" transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1], delay: 0.3 }}></motion.path>
                     </svg>
                 </>
             )}
