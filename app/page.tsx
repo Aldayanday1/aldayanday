@@ -190,16 +190,27 @@ export default function Home() {
 
   // 1. About Me - ScrollReveal animated text
   const renderAboutMe = () => (
-    <ScrollReveal
-      baseOpacity={0}
-      enableBlur={true}
-      baseRotation={5}
-      blurStrength={10}
-      containerClassName="w-full max-w-7xl mx-auto px-2 sm:px-4 mb-8"
-      textClassName="text-[13px] sm:text-[34px] leading-relaxed"
-    >
-      About Me - Mochamad Aldi Raihan Fachrizal Fresh Graduate dari Program Studi Teknik Informatika, Universitas Muhammadiyah Yogyakarta Angkatan 2021 dengan IPK 3.6. Spesialis dalam pengembangan aplikasi Fullstack Development dengan pengalaman dalam membangun aplikasi web modern menggunakan teknologi terkini. Passionate dalam menciptakan solusi digital yang inovatif dan user-friendly. Selalu antusias untuk belajar teknologi baru dan menghadapi tantangan dalam dunia programming. Memiliki kemampuan bekerja dalam tim, komunikasi yang baik, dan mindset problem-solving yang kuat.
-    </ScrollReveal>
+    <div className="w-full mb-8">
+      {/* Theme-aware signature above the about text */}
+      <div className="w-full flex justify-center mb-6">
+        <img
+          src={isDarkMode ? '/images/signature-white.jpg' : '/images/signature-black.png'}
+          alt="Signature"
+          className="w-33 sm:w-196 md:w-[900px] lg:w-[400px] h-auto object-contain"
+          style={{ maxWidth: '92%' }}
+        />
+      </div>
+
+      <ScrollReveal
+        enableBlur={true}
+        baseRotation={5}
+        blurStrength={10}
+        containerClassName="w-full"
+        textClassName="text-[20px] sm:text-[34px] leading-relaxed"
+      >
+        About Me - Mochamad Aldi Raihan Fachrizal Fresh Graduate dari Program Studi Teknik Informatika, Universitas Muhammadiyah Yogyakarta Angkatan 2021 dengan IPK 3.6. Spesialis dalam pengembangan aplikasi Fullstack Development dengan pengalaman dalam membangun aplikasi web modern menggunakan teknologi terkini. Passionate dalam menciptakan solusi digital yang inovatif dan user-friendly. Selalu antusias untuk belajar teknologi baru dan menghadapi tantangan dalam dunia programming. Memiliki kemampuan bekerja dalam tim, komunikasi yang baik, dan mindset problem-solving yang kuat.
+      </ScrollReveal>
+    </div>
   );
 
   // 2. Stack - Minimalist skill boxes
@@ -1057,7 +1068,7 @@ export default function Home() {
         transition={{ duration: 0.3, delay: 0.05 }}
         className="mt-[-0.95rem]"
       >
-        <div className="w-full max-w-2xl mx-auto">
+        <div className="w-full max-w-2xl mx-auto pr-2.5">
           <div className="space-y-1">
             {contacts.map((contact, index) => (
               <motion.div
@@ -1333,7 +1344,7 @@ export default function Home() {
             </div>
 
             {/* Content Section */}
-            <div className="px-4 sm:px-6 mb-20 max-w-3xl mx-auto">
+            <div className={`px-4 sm:px-6 mb-20 mx-auto ${activeTab === 'About' ? 'max-w-7xl' : 'max-w-3xl'}`}>
               {getContentByTab()}
             </div>
           </motion.div>
