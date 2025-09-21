@@ -157,29 +157,7 @@ export default function Home() {
     { id: "Contact", label: "Contact" }
   ];
 
-  const getContentByTab = () => {
-    const contentMap = {
-      About: renderAboutMe(),
-      Stack: renderStack(),
-      Project: renderProject(),
-      Credentials: renderCredentials(),
-      Contact: renderContact()
-    };
 
-    return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
-        >
-          {contentMap[activeTab]}
-        </motion.div>
-      </AnimatePresence>
-    );
-  };
 
   // Close any open certificate dropdown when switching away from Credentials tab
   useEffect(() => {
@@ -196,15 +174,15 @@ export default function Home() {
         <img
           src={isDarkMode ? '/images/signature-white.jpg' : '/images/signature-black.png'}
           alt="Signature"
-          className="w-33 sm:w-196 md:w-[900px] lg:w-[400px] h-auto object-contain"
-          style={{ maxWidth: '92%' }}
+          className="w-33 sm:w-196 md:w-[900px] lg:w-[400px] h-auto object-contain transition-opacity duration-200 hover:opacity-100"
+          style={{ maxWidth: '92%', opacity: 0.85 }}
         />
       </div>
 
       <ScrollReveal
         enableBlur={true}
         baseRotation={5}
-        blurStrength={10}
+        blurStrength={50}
         containerClassName="w-full"
         textClassName="text-[20px] sm:text-[34px] leading-relaxed"
       >
@@ -261,7 +239,6 @@ export default function Home() {
                     <h3 className="font-semibold text-[var(--text-primary)] group-hover:text-[var(--text-primary)]">
                       {skill.name}
                     </h3>
-                    <p className="text-xs text-[var(--text-secondary)]">{skill.category}</p>
                   </div>
                 </div>
               </motion.div>
@@ -271,8 +248,6 @@ export default function Home() {
       </motion.div>
     );
   };
-
-  // 3. Project - Keep existing design
 
   // data projects
   const projects = [
@@ -292,7 +267,8 @@ export default function Home() {
       logo: "🌤️",
       image: "/images/projects-1.png", // Weather related image from Unsplash
       buttonText: "Learn More",
-      link: "https://github.com/your-username/weather-dashboard"
+      // repo is private / unavailable in this example
+      link: null
     },
     {
       id: 3,
@@ -489,20 +465,26 @@ export default function Home() {
                               />
                             </button>
 
-                            <a
-                              href={item.link ?? "#"}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label="GitHub"
-                              className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
-                            ${isDarkMode
-                                  ? 'hover:bg-white hover:text-black hover:border-black'
-                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                                }
-                            transition-colors duration-150 group`}
-                            >
-                              <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
-                            </a>
+                            {item.link ? (
+                              <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="GitHub"
+                                className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                              ${isDarkMode
+                                    ? 'hover:bg-white hover:text-black hover:border-black'
+                                    : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                  }
+                              transition-colors duration-150 group`}
+                              >
+                                <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
+                              </a>
+                            ) : (
+                              <div onClick={() => alert('Private')} className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm opacity-50 cursor-default">
+                                <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
+                              </div>
+                            )}
                           </div>
 
                           <div style={{ height: '22px', width: '155px', position: 'relative', overflow: 'hidden' }}>
@@ -565,21 +547,27 @@ export default function Home() {
                               />
                             </button>
 
-                            <a
-                              href={item.link ?? "#"}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label="GitHub"
-                              className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
-                            ${isDarkMode
-                                  ? 'hover:bg-white hover:text-black hover:border-black'
-                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                                }
-                            transition-colors duration-150 group`}
-                              style={{ fontSize: '1.1rem' }}
-                            >
-                              <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
-                            </a>
+                            {item.link ? (
+                              <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="GitHub"
+                                className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                              ${isDarkMode
+                                    ? 'hover:bg-white hover:text-black hover:border-black'
+                                    : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                  }
+                              transition-colors duration-150 group`}
+                                style={{ fontSize: '1.1rem' }}
+                              >
+                                <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
+                              </a>
+                            ) : (
+                              <div onClick={() => alert('Private')} className="w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm opacity-50 cursor-default" style={{ fontSize: '1.1rem' }}>
+                                <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
+                              </div>
+                            )}
                           </div>
 
                           <div style={{ height: '22px', width: '123px', position: 'relative', overflow: 'hidden' }}>
@@ -716,20 +704,26 @@ export default function Home() {
                               />
                             </button>
 
-                            <a
-                              href={item.link ?? "#"}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label="GitHub"
-                              className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
-                            ${isDarkMode
-                                  ? 'hover:bg-white hover:text-black hover:border-black'
-                                  : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
-                                }
-                            transition-colors duration-150 group`}
-                            >
-                              <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
-                            </a>
+                            {item.link ? (
+                              <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="GitHub"
+                                className={`w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                              ${isDarkMode
+                                    ? 'hover:bg-white hover:text-black hover:border-black'
+                                    : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                  }
+                              transition-colors duration-150 group`}
+                              >
+                                <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
+                              </a>
+                            ) : (
+                              <div onClick={() => alert('Private')} className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm opacity-50 cursor-default">
+                                <FontAwesomeIcon icon={faGithub} className="text-[16px]" />
+                              </div>
+                            )}
                           </div>
 
                           <div style={{ height: '22px', width: '125px', position: 'relative', overflow: 'hidden' }}>
@@ -792,21 +786,27 @@ export default function Home() {
                               />
                             </button>
 
-                            <a
-                              href={item.link ?? "#"}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label="GitHub"
-                              className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var,--text-primary)] shadow-sm
-                            ${isDarkMode
-                                  ? 'hover:bg-white hover:text-black hover:border-black'
-                                  : 'hover:bg-[var(--text-primary)] hover:text-[var,--background)] hover:border-[var,--background)]'
-                                }
-                            transition-colors duration-150 group`}
-                              style={{ fontSize: '1.1rem' }}
-                            >
-                              <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
-                            </a>
+                            {item.link ? (
+                              <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="GitHub"
+                                className={`w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm
+                              ${isDarkMode
+                                    ? 'hover:bg-white hover:text-black hover:border-black'
+                                    : 'hover:bg-[var(--text-primary)] hover:text-[var(--background)] hover:border-[var(--background)]'
+                                  }
+                              transition-colors duration-150 group`}
+                                style={{ fontSize: '1.1rem' }}
+                              >
+                                <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
+                              </a>
+                            ) : (
+                              <div className="w-8 h-8 sm:w-[35px] sm:h-[35px] flex items-center justify-center rounded-full border border-[var(--text-primary)] bg-[var(--background)] text-[var(--text-primary)] shadow-sm opacity-50 cursor-default pointer-events-none" style={{ fontSize: '1.1rem' }}>
+                                <FontAwesomeIcon icon={faGithub} className="text-[18px] sm:text-[18px]" />
+                              </div>
+                            )}
                           </div>
 
                           <div style={{ height: '22px', width: '123px', position: 'relative', overflow: 'hidden' }}>
@@ -1068,7 +1068,7 @@ export default function Home() {
         transition={{ duration: 0.3, delay: 0.05 }}
         className="mt-[-0.95rem]"
       >
-        <div className="w-full max-w-2xl mx-auto pr-2.5">
+        <div className="w-full max-w-2xl mx-auto pr-[15px] sm:pr-[0px]">
           <div className="space-y-1">
             {contacts.map((contact, index) => (
               <motion.div
@@ -1129,6 +1129,29 @@ export default function Home() {
   };
 
   // Main Return
+  const getContentByTab = () => {
+    const contentMap: Record<string, any> = {
+      About: renderAboutMe(),
+      Stack: renderStack(),
+      Project: renderProject(),
+      Credentials: renderCredentials(),
+      Contact: renderContact()
+    };
+
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+        >
+          {contentMap[activeTab]}
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
   return (
     <main>
       <AnimatePresence mode='wait'>
